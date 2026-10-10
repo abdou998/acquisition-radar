@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Acquisition Radar — {{ run.run_date }}</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 32px;
+      border-bottom: 3px solid #3b82f6;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .header .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin: 0;
+    }
+    .content {
+      padding: 32px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 32px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card .val {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0;
+    }
+    .stat-card .label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .hero-deal {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .deal-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .deal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .deal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      text-decoration: none;
+    }
+    .deal-title:hover {
+      color: #2563eb;
+    }
+    .badge-score {
+      background: #059669;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .metrics-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .metrics-table td, .metrics-table th {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .metrics-table th {
+      background: #f8fafc;
+      color: #475569;
+      text-align: left;
+    }
+    .callout {
+      background: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      padding: 14px 16px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0;
+      font-size: 13.5px;
+    }
+    .playbook-list {
+      margin: 8px 0;
+      padding-left: 20px;
+      font-size: 13px;
+    }
+    .playbook-list li {
+      margin-bottom: 4px;
+    }
+    .alert-banner {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #92400e;
+      margin: 12px 0;
+    }
+    .footer {
+      background: #f8fafc;
+      padding: 24px 32px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Daily Online Business Acquisition Radar</h1>
+      <p class="subtitle">Auditing digital assets under $1,000 &bull; Generated {{ now_str }} &bull; Schedule 08:00 {{ config.schedule_timezone }}</p>
+    </div>
+
+    <div class="content">
+      <!-- Section A: Executive Summary -->
+      <div class="section-title">A. Executive Summary</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="val">{{ run.total_discovered }}</div>
+          <div class="label">Total Discovered</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" style="color: #059669;">{{ shortlist_1k|length }}</div>
+          <div class="label">Shortlist &le; $1k</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" style="color: #2563eb;">{{ exceptional_5k|length }}</div>
+          <div class="label">Exceptional &le; $5k</div>
+        </div>
+        <div class="stat-card">
+          <div class="val">{{ watchlist_items|length }}</div>
+          <div class="label">Watchlist / Drops</div>
+        </div>
+      </div>
+
+      {% if highlight_deal %}
+      <div class="hero-deal">
+        <span class="hero-badge">Top Opportunity of the Day</span>
+        <h3 style="margin: 4px 0 8px 0;"><a href="{{ highlight_deal.listing.url }}" target="_blank" style="color: #1e3a8a; text-decoration: none;">{{ highlight_deal.listing.title }}</a></h3>
+        <p style="margin: 0 0 10px 0; font-size: 14px; color: #1e293b;">
+          <strong>Price:</strong> ${{ "%.0f"|format(highlight_deal.listing.asking_price) }} &bull; 
+          <strong>Score:</strong> {{ highlight_deal.score.total_score }}/100 &bull; 
+          <strong>Source:</strong> {{ highlight_deal.listing.source|title }}
+        </p>
+        <p style="margin: 0; font-size: 13.5px; color: #334155;">{{ highlight_deal.valuation.undervaluation_thesis }}</p>
+      </div>
+      {% endif %}
+
+      <!-- Section B: Best Opportunities Under $1,000 -->
+      <div class="section-title">B. Best Opportunities Under $1,000 USD</div>
+      <p style="font-size: 13px; color: #64748b; margin-top: -8px;">Strict maximum budget $1,000 total, including all escrow and transfer fees.</p>
+
+      {% if not shortlist_1k %}
+        <div class="callout" style="border-left-color: #64748b;">
+          No listings met the disciplined 70+ point score threshold within $1,000 today. No low-conviction filler items included.
+        </div>
+      {% else %}
+        {% for opp in shortlist_1k %}
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="{{ opp.listing.url }}" target="_blank" class="deal-title">#{{ loop.index }}. {{ opp.listing.title }}</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">{{ opp.listing.source|title }}</span>
+                <span class="pill">{{ opp.listing.category }}</span>
+                <span class="pill">Confidence: {{ opp.seo.confidence|upper }}</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">${{ "%.0f"|format(opp.listing.asking_price) }}</div>
+              <span class="badge-score">Score: {{ opp.score.total_score }}/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>${{ "%.0f"|format(opp.valuation.total_acquisition_cost) }}</strong></td>
+                <td>{{ "{:,}".format(opp.listing.monthly_visitors) }} visits</td>
+                <td>${{ "%.0f"|format(opp.listing.monthly_profit) }}/mo</td>
+                <td><strong>${{ "%.0f"|format(opp.valuation.ad_equivalent_value_base) }}/mo</strong></td>
+                <td>${{ "%.0f"|format(opp.valuation.rebuild_cost_estimate) }}</td>
+                <td><strong>{{ "%.1f"|format(opp.valuation.payback_period_months_conservative) }} mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            {{ opp.valuation.undervaluation_thesis }}
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              {% for step in opp.valuation.action_plan_30_days %}
+              <li>{{ step }}</li>
+              {% endfor %}
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~${{ "%.0f"|format(opp.valuation.estimated_improvement_cost) }} &bull; Weekly time commitment: ~{{ "%.1f"|format(opp.valuation.estimated_weekly_hours) }} hrs/week
+            </div>
+          </div>
+
+          {% if opp.valuation.red_flags %}
+          <div class="alert-banner">
+            <strong>Due Diligence Warnings:</strong>
+            {% for rf in opp.valuation.red_flags %}
+            <div>&bull; {{ rf }}</div>
+            {% endfor %}
+          </div>
+          {% endif %}
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via {{ opp.listing.source|title }} to verify analytics.</span>
+            <a href="{{ opp.listing.url }}" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+      <!-- Section C: Best SEO Opportunities -->
+      <div class="section-title">C. Best SEO Opportunities</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        {% for opp in seo_highlights[:3] %}
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="margin: 0 0 6px 0;"><a href="{{ opp.listing.url }}" target="_blank" style="color: #1e293b; text-decoration: none;">{{ opp.listing.title }}</a></h4>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Domain: {{ opp.listing.domain or 'Masked' }} &bull; DA Proxy: {{ "%.0f"|format(opp.seo.domain_authority_proxy) }}</div>
+          <p style="font-size: 12.5px; margin: 0; color: #334155;">{{ opp.seo.content_gap_opportunity }}</p>
+        </div>
+        {% endfor %}
+      </div>
+
+      <!-- Section D: Watchlist and Changes -->
+      <div class="section-title">D. Watchlist & Tracked Price Changes</div>
+      {% if not watchlist_items %}
+        <p style="font-size: 13px; color: #64748b;">No price drops or status changes to report today.</p>
+      {% else %}
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>Listing</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Status / Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for opp in watchlist_items[:6] %}
+            <tr>
+              <td><a href="{{ opp.listing.url }}" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">{{ opp.listing.title }}</a></td>
+              <td>{{ opp.listing.category }}</td>
+              <td>${{ "%.0f"|format(opp.listing.asking_price) }}</td>
+              <td>
+                {% if opp.listing.price_change_amount < 0 %}
+                <span style="color: #dc2626; font-weight: 700;">Price Drop {{ "%.1f"|format(opp.listing.price_change_percent) }}% (${{ "%.0f"|format(opp.listing.price_change_amount) }})</span>
+                {% else %}
+                <span>Watchlist (Score: {{ "%.0f"|format(opp.score.total_score) }})</span>
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      {% endif %}
+
+      <!-- Section E: Exceptional Opportunities Up to $5,000 -->
+      <div class="section-title">E. Worth Considering — Exceptional Opportunities Up to $5,000</div>
+      {% if not exceptional_5k %}
+        <div class="callout" style="border-left-color: #64748b; background: #f8fafc;">
+          <strong>“No exceptional opportunities justified exceeding the $1,000 budget today.”</strong><br>
+          <span style="font-size: 12px; color: #64748b;">Candidates between $1k and $5k failed to meet the strict cash flow, verification, and payback standards.</span>
+        </div>
+      {% else %}
+        {% for opp in exceptional_5k %}
+        <div class="deal-card" style="border: 2px solid #3b82f6;">
+          <div class="deal-header">
+            <div>
+              <span class="hero-badge" style="background: #4338ca;">Exceptional High-Conviction Candidate</span>
+              <h3 style="margin: 4px 0;"><a href="{{ opp.listing.url }}" target="_blank" class="deal-title">{{ opp.listing.title }}</a></h3>
+              <div style="font-size: 13px; color: #64748b;">{{ opp.listing.source|title }} &bull; Proven MRR: ${{ "%.0f"|format(opp.listing.monthly_revenue) }} &bull; Net Profit: ${{ "%.0f"|format(opp.listing.monthly_profit) }}/mo</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 22px; font-weight: 800; color: #1e3a8a;">${{ "%.0f"|format(opp.listing.asking_price) }}</div>
+              <span class="badge-score">Score: {{ opp.score.total_score }}/100</span>
+            </div>
+          </div>
+
+          <div style="font-size: 13px; line-height: 1.6; color: #1e293b;">
+            <p><strong>1. Why It Merits Exceeding Normal Budget:</strong> {{ opp.score.exceptional_justification.reason_to_exceed_budget }}</p>
+            <p><strong>2. Evidence Validating Audience & Revenue:</strong> {{ opp.score.exceptional_justification.evidence_validation }}</p>
+            <p><strong>3. Why Price Appears Attractive:</strong> {{ opp.score.exceptional_justification.price_attractiveness }}</p>
+            <p><strong>4. What Could Go Wrong:</strong> {{ opp.score.exceptional_justification.downside_risks }}</p>
+            <p><strong>5. Required Pre-Purchase Verification:</strong> {{ opp.score.exceptional_justification.required_verification }}</p>
+            <p><strong>6. Why Superior to Sub-$1,000 Alternatives:</strong> {{ opp.score.exceptional_justification.why_superior_to_sub_1k }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      {% endif %}
+
+    </div>
+
+    <div class="footer">
+      Daily Acquisition Radar &bull; Automated Digital Business Sourcing &bull; 
+      Always use Escrow.com and verify Google Search Console &amp; payment dashboards prior to transfer.
+    </div>
+  </div>
+</body>
+</html>

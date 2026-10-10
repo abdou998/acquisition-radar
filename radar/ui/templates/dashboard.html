@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Acquisition Radar — Undervalued Business Dashboard</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+    body { font-family: 'Inter', sans-serif; }
+    .modal-active { overflow: hidden; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+  <!-- Top Navigation -->
+  <header class="bg-slate-900 text-white border-b border-slate-800 sticky top-0 z-30">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-9 h-9 rounded-lg bg-blue-600 flex items-center justify-center font-bold text-white shadow-md">
+          🎯
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight">Acquisition Radar</h1>
+          <p class="text-xs text-slate-400">Daily Undervalued Digital Business Sourcing (&le; $1,000 Budget)</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-3">
+        <button onclick="triggerRun()" id="runBtn" class="inline-flex items-center px-3.5 py-1.5 rounded-lg text-xs font-semibold bg-blue-600 hover:bg-blue-500 text-white transition shadow-sm">
+          <svg class="w-4 h-4 mr-1.5 animate-spin hidden" id="runSpinner" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path></svg>
+          <span id="runBtnText">⚡ Run Discovery Cycle</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Top Stats Bar -->
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Total Tracked</div>
+        <div class="text-3xl font-extrabold text-slate-900 mt-1" id="statTotal">{{ total_count }}</div>
+        <div class="text-xs text-slate-400 mt-1">Across all verified marketplaces</div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-emerald-200 shadow-sm bg-emerald-50/20">
+        <div class="text-xs font-semibold uppercase text-emerald-700 tracking-wider">Buyer Shortlist (&le; $1k)</div>
+        <div class="text-3xl font-extrabold text-emerald-600 mt-1" id="statShortlist">{{ shortlist_count }}</div>
+        <div class="text-xs text-emerald-600/80 mt-1">Score &ge; 70 &bull; High conviction</div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-blue-200 shadow-sm bg-blue-50/20">
+        <div class="text-xs font-semibold uppercase text-blue-700 tracking-wider">Exceptional (&le; $5k)</div>
+        <div class="text-3xl font-extrabold text-blue-600 mt-1" id="statExceptional">{{ exceptional_count }}</div>
+        <div class="text-xs text-blue-600/80 mt-1">Cash flowing or rare moat</div>
+      </div>
+      <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+        <div class="text-xs font-semibold uppercase text-slate-500 tracking-wider">Price Reductions</div>
+        <div class="text-3xl font-extrabold text-amber-600 mt-1" id="statDrops">{{ drops_count }}</div>
+        <div class="text-xs text-slate-400 mt-1">Arbitrage opportunities</div>
+      </div>
+    </div>
+
+    <!-- Filter Controls -->
+    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 mb-6 bg-white p-3.5 rounded-xl border border-slate-200 shadow-sm">
+      <div class="flex items-center space-x-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+        <button onclick="setFilter('all')" class="filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white" data-filter="all">All Deals</button>
+        <button onclick="setFilter('shortlist')" class="filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100" data-filter="shortlist">Shortlist &le; $1k</button>
+        <button onclick="setFilter('exceptional')" class="filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100" data-filter="exceptional">Exceptional &le; $5k</button>
+        <button onclick="setFilter('watchlist')" class="filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100" data-filter="watchlist">Watchlist</button>
+        <button onclick="setFilter('drops')" class="filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100" data-filter="drops">Price Drops</button>
+      </div>
+      <div class="w-full sm:w-72">
+        <input type="text" id="searchInput" oninput="renderDeals()" placeholder="Search title, niche, domain..." class="w-full text-xs px-3.5 py-2 border border-slate-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 bg-slate-50">
+      </div>
+    </div>
+
+    <!-- Deals Grid -->
+    <div id="dealsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <!-- Injected dynamically via JavaScript -->
+    </div>
+  </main>
+
+  <!-- Detailed Opportunity Dossier Modal -->
+  <div id="dossierModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-200">
+      <div class="p-6 border-b border-slate-100 flex items-start justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
+        <div>
+          <div class="flex items-center space-x-2">
+            <span id="modalSource" class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700"></span>
+            <span id="modalCategory" class="px-2.5 py-0.5 rounded text-[11px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700"></span>
+            <span id="modalScoreBadge" class="px-2.5 py-0.5 rounded text-[11px] font-bold text-white bg-emerald-600"></span>
+          </div>
+          <h2 id="modalTitle" class="text-xl font-bold text-slate-900 mt-2"></h2>
+          <div id="modalDomain" class="text-xs text-slate-500 mt-0.5"></div>
+        </div>
+        <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-lg hover:bg-slate-100">
+          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <div class="p-6 space-y-6">
+        <!-- Key Pricing & Valuation Bar -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl border border-slate-100">
+          <div>
+            <div class="text-[11px] text-slate-500 uppercase font-semibold">Asking Price</div>
+            <div class="text-lg font-extrabold text-slate-900" id="modalPrice"></div>
+            <div class="text-[11px] text-slate-400" id="modalAllIn"></div>
+          </div>
+          <div>
+            <div class="text-[11px] text-slate-500 uppercase font-semibold">Monthly Traffic</div>
+            <div class="text-lg font-extrabold text-slate-900" id="modalVisits"></div>
+            <div class="text-[11px] text-slate-400" id="modalTrafficTag"></div>
+          </div>
+          <div>
+            <div class="text-[11px] text-slate-500 uppercase font-semibold">Claimed Cash Flow</div>
+            <div class="text-lg font-extrabold text-slate-900" id="modalCashFlow"></div>
+            <div class="text-[11px] text-slate-400" id="modalMultiple"></div>
+          </div>
+          <div>
+            <div class="text-[11px] text-slate-500 uppercase font-semibold">Est. Payback</div>
+            <div class="text-lg font-extrabold text-emerald-600" id="modalPayback"></div>
+            <div class="text-[11px] text-slate-400">Conservative cash flow</div>
+          </div>
+        </div>
+
+        <!-- Undervaluation Thesis Callout -->
+        <div class="bg-blue-50/70 border border-blue-200 p-4 rounded-xl">
+          <div class="text-xs font-bold uppercase text-blue-900 flex items-center mb-1">
+            <span class="mr-1.5">💡</span> Why This Opportunity Is Undervalued
+          </div>
+          <p id="modalThesis" class="text-sm text-slate-700 leading-relaxed"></p>
+        </div>
+
+        <!-- SEO Intelligence Breakdown -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2.5">Google SEO Intelligence & Organic Moat</h3>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-3">
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+              <div class="text-[11px] text-slate-500">Ad-Equivalent Value</div>
+              <div class="text-sm font-bold text-slate-900 mt-0.5" id="modalAdValue"></div>
+              <div class="text-[10px] text-slate-400">What Google Ads would cost</div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+              <div class="text-[11px] text-slate-500">AI Overview Risk</div>
+              <div class="text-sm font-bold text-slate-900 mt-0.5" id="modalAiRisk"></div>
+              <div class="text-[10px] text-slate-400">Zero-click vulnerability</div>
+            </div>
+            <div class="p-3 bg-slate-50 rounded-lg border border-slate-100">
+              <div class="text-[11px] text-slate-500">Rebuild Replacement</div>
+              <div class="text-sm font-bold text-slate-900 mt-0.5" id="modalRebuild"></div>
+              <div class="text-[10px] text-slate-400">To build & rank from zero</div>
+            </div>
+          </div>
+          <div id="modalSeoContentGap" class="text-xs text-slate-600 bg-slate-50 p-3 rounded-lg border border-slate-100"></div>
+        </div>
+
+        <!-- 30-Day Turnaround Playbook -->
+        <div>
+          <h3 class="text-xs font-bold uppercase tracking-wider text-slate-500 mb-2">30-Day Improvement Playbook</h3>
+          <ul id="modalPlaybook" class="text-xs text-slate-700 space-y-1.5 pl-4 list-disc"></ul>
+        </div>
+
+        <!-- Due Diligence Warnings & Checklist -->
+        <div id="modalRedFlagsContainer" class="hidden bg-amber-50 border border-amber-200 p-4 rounded-xl">
+          <div class="text-xs font-bold uppercase text-amber-900 mb-1.5 flex items-center">
+            <span class="mr-1.5">⚠️</span> Pre-Purchase Due Diligence Warnings
+          </div>
+          <ul id="modalRedFlags" class="text-xs text-amber-800 space-y-1 pl-4 list-disc"></ul>
+        </div>
+
+        <!-- User Status & Notes -->
+        <div class="border-t border-slate-100 pt-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex items-center space-x-2 w-full sm:w-auto">
+            <label class="text-xs font-medium text-slate-600">Status:</label>
+            <select id="userStatusSelect" onchange="saveStatus()" class="text-xs border border-slate-200 rounded-lg px-2.5 py-1.5 bg-slate-50">
+              <option value="new">New Lead</option>
+              <option value="investigating">Investigating</option>
+              <option value="contacted">Contacted Seller</option>
+              <option value="passed">Passed</option>
+              <option value="purchased">Purchased 🎉</option>
+            </select>
+          </div>
+          <div class="flex items-center space-x-3 w-full sm:w-auto justify-end">
+            <a id="modalExternalLink" href="#" target="_blank" class="inline-flex items-center text-xs font-semibold text-white bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-lg transition shadow-sm">
+              Open Marketplace Listing &rarr;
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let allDeals = {{ deals_json | safe }};
+    let currentFilter = 'all';
+    let activeDeal = null;
+
+    function setFilter(filter) {
+      currentFilter = filter;
+      document.querySelectorAll('.filter-tab').forEach(tab => {
+        if (tab.getAttribute('data-filter') === filter) {
+          tab.className = 'filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg bg-slate-900 text-white';
+        } else {
+          tab.className = 'filter-tab px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-600 hover:bg-slate-100';
+        }
+      });
+      renderDeals();
+    }
+
+    function renderDeals() {
+      const query = document.getElementById('searchInput').value.toLowerCase();
+      const grid = document.getElementById('dealsGrid');
+      grid.innerHTML = '';
+
+      const filtered = allDeals.filter(opp => {
+        const l = opp.listing;
+        const s = opp.score;
+
+        // Search match
+        const text = `${l.title} ${l.category} ${l.domain || ''} ${l.description}`.toLowerCase();
+        if (query && !text.includes(query)) return false;
+
+        // Filter match
+        if (currentFilter === 'shortlist') return s.classification === 'BUYER_SHORTLIST' && !s.exceptional_5k_candidate && l.asking_price <= 1000;
+        if (currentFilter === 'exceptional') return s.exceptional_5k_candidate;
+        if (currentFilter === 'watchlist') return s.classification === 'WATCHLIST';
+        if (currentFilter === 'drops') return l.price_change_amount < 0;
+
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 text-sm">No opportunities match the current filter.</div>';
+        return;
+      }
+
+      filtered.forEach(opp => {
+        const l = opp.listing;
+        const s = opp.score;
+        const v = opp.valuation;
+
+        const isDrop = l.price_change_amount < 0;
+        const scoreBg = s.total_score >= 70 ? 'bg-emerald-600' : (s.total_score >= 50 ? 'bg-amber-600' : 'bg-slate-600');
+
+        const card = document.createElement('div');
+        card.className = 'bg-white rounded-xl border border-slate-200 p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between cursor-pointer';
+        card.onclick = () => openModal(opp);
+
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between mb-2.5">
+              <div class="flex items-center space-x-1.5">
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-slate-100 text-slate-700">${l.source}</span>
+                <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider bg-blue-50 text-blue-700">${l.category}</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[11px] font-bold text-white ${scoreBg}">${s.total_score}/100</span>
+            </div>
+            <h3 class="font-bold text-slate-900 text-sm leading-snug line-clamp-2">${l.title}</h3>
+            <p class="text-xs text-slate-500 mt-1 line-clamp-2">${l.description}</p>
+          </div>
+
+          <div class="mt-4 pt-3 border-t border-slate-100">
+            <div class="flex items-baseline justify-between">
+              <div>
+                <span class="text-xl font-extrabold text-slate-900">$${Math.round(l.asking_price).toLocaleString()}</span>
+                ${isDrop ? `<span class="ml-1 text-[11px] font-bold text-red-600">📉 ${Math.round(l.price_change_percent)}%</span>` : ''}
+              </div>
+              <div class="text-right">
+                <div class="text-xs font-semibold text-slate-700">${l.monthly_visitors.toLocaleString()} visits/mo</div>
+                <div class="text-[10px] text-slate-400">Payback: ${v.payback_period_months_conservative.toFixed(1)} mos</div>
+              </div>
+            </div>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openModal(opp) {
+      activeDeal = opp;
+      const l = opp.listing;
+      const s = opp.score;
+      const v = opp.valuation;
+      const seo = opp.seo;
+
+      document.getElementById('modalSource').innerText = l.source;
+      document.getElementById('modalCategory').innerText = l.category;
+      document.getElementById('modalScoreBadge').innerText = `Score: ${s.total_score}/100`;
+      document.getElementById('modalTitle').innerText = l.title;
+      document.getElementById('modalDomain').innerText = l.domain ? `Domain: ${l.domain} (${l.domain_age_years.toFixed(1)} yrs old)` : 'Domain: Masked by seller';
+
+      document.getElementById('modalPrice').innerText = `$${Math.round(l.asking_price).toLocaleString()}`;
+      document.getElementById('modalAllIn').innerText = `All-in: ~$${Math.round(v.total_acquisition_cost).toLocaleString()}`;
+
+      document.getElementById('modalVisits').innerText = `${l.monthly_visitors.toLocaleString()} /mo`;
+      document.getElementById('modalTrafficTag').innerText = l.seller_claims_verified ? 'Verified (GA4/GSC)' : 'Seller-Reported';
+
+      document.getElementById('modalCashFlow').innerText = `$${Math.round(l.monthly_profit).toLocaleString()}/mo`;
+      document.getElementById('modalMultiple').innerText = v.valuation_multiple > 0 ? `${v.valuation_multiple}x annual profit` : 'Starter asset';
+
+      document.getElementById('modalPayback').innerText = `${v.payback_period_months_conservative.toFixed(1)} months`;
+      document.getElementById('modalThesis').innerText = v.undervaluation_thesis;
+
+      document.getElementById('modalAdValue').innerText = `$${Math.round(v.ad_equivalent_value_base).toLocaleString()}/mo`;
+      document.getElementById('modalAiRisk').innerText = seo.ai_overview_vulnerability.toUpperCase();
+      document.getElementById('modalRebuild').innerText = `$${Math.round(v.rebuild_cost_estimate).toLocaleString()}`;
+      document.getElementById('modalSeoContentGap').innerText = seo.content_gap_opportunity || 'N/A';
+
+      const playbookEl = document.getElementById('modalPlaybook');
+      playbookEl.innerHTML = '';
+      (v.action_plan_30_days || []).forEach(step => {
+        const li = document.createElement('li');
+        li.innerText = step;
+        playbookEl.appendChild(li);
+      });
+
+      const redFlagsCont = document.getElementById('modalRedFlagsContainer');
+      const redFlagsList = document.getElementById('modalRedFlags');
+      if (v.red_flags && v.red_flags.length > 0) {
+        redFlagsCont.classList.remove('hidden');
+        redFlagsList.innerHTML = '';
+        v.red_flags.forEach(flag => {
+          const li = document.createElement('li');
+          li.innerText = flag;
+          redFlagsList.appendChild(li);
+        });
+      } else {
+        redFlagsCont.classList.add('hidden');
+      }
+
+      document.getElementById('modalExternalLink').href = l.url;
+      document.getElementById('dossierModal').classList.remove('hidden');
+      document.body.classList.add('modal-active');
+    }
+
+    function closeModal() {
+      document.getElementById('dossierModal').classList.add('hidden');
+      document.body.classList.remove('modal-active');
+    }
+
+    async function triggerRun() {
+      const btn = document.getElementById('runBtn');
+      const spinner = document.getElementById('runSpinner');
+      const text = document.getElementById('runBtnText');
+
+      btn.disabled = true;
+      spinner.classList.remove('hidden');
+      text.innerText = 'Running Discovery Cycle...';
+
+      try {
+        const res = await fetch('/api/run', { method: 'POST' });
+        const data = await res.json();
+        if (data.status === 'success') {
+          window.location.reload();
+        } else {
+          alert('Error: ' + data.error);
+        }
+      } catch (err) {
+        alert('Network error triggering discovery cycle.');
+      } finally {
+        spinner.classList.add('hidden');
+        text.innerText = '⚡ Run Discovery Cycle';
+        btn.disabled = false;
+      }
+    }
+
+    async function saveStatus() {
+      if (!activeDeal) return;
+      const select = document.getElementById('userStatusSelect');
+      const status = select.value;
+      try {
+        await fetch('/api/update_status', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ listing_id: activeDeal.listing.id, status: status })
+        });
+      } catch (e) {
+        console.error('Failed to update status', e);
+      }
+    }
+
+    // Initial render
+    renderDeals();
+  </script>
+</body>
+</html>
