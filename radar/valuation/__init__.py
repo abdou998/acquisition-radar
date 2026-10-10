@@ -14,15 +14,17 @@ class ValuationEngine:
     def evaluate(cls, listing: Listing, seo: SEOMetrics) -> Valuation:
         benchmark = get_niche_benchmark(listing.category, listing.title, listing.description)
 
-        # 1. Traffic ad-equivalent value
+        # 1. Traffic ad-equivalent value (using verified organic visits)
         ad_low, ad_base, ad_high = TrafficValuator.calculate_ad_equivalent_value(
-            max(listing.monthly_visitors, listing.monthly_search_clicks),
+            seo.estimated_monthly_organic_visits,
             benchmark,
             seo.commercial_intent_ratio
         )
 
         # 2. Monetization potential
-        mon_low, mon_base, mon_high = TrafficValuator.calculate_monetization_potential(listing, benchmark)
+        mon_low, mon_base, mon_high = TrafficValuator.calculate_monetization_potential(
+            listing, benchmark, verified_visits=seo.estimated_monthly_organic_visits
+        )
 
         # 3. Rebuild cost
         rebuild_cost, rebuild_months = TrafficValuator.estimate_rebuild_cost(listing)

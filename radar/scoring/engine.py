@@ -60,7 +60,12 @@ class ScoringEngine:
     @staticmethod
     def _score_audience(listing: Listing, seo: SEOMetrics) -> float:
         score = 0.0
-        visits = max(listing.monthly_visitors, listing.monthly_search_clicks)
+        # If unindexed and unverified, claimed search traffic is 0!
+        if seo.confidence == "unverified_zero_traffic" or (seo.indexed_pages == 0 and not listing.seller_claims_verified):
+            visits = 0
+        else:
+            visits = max(seo.estimated_monthly_organic_visits, listing.monthly_search_clicks)
+            
         subs = listing.subscribers_count
 
         # Monthly traffic volume (max 14 pts)
@@ -284,6 +289,11 @@ class ScoringEngine:
             penalties += 15.0
             reasons.append("High personal brand dependency (-15 pts).")
 
+        # 5. Zero Search Presence / Fabricated Traffic Claim (-25 pts)
+        if seo.confidence == "unverified_zero_traffic" or (seo.indexed_pages == 0 and not listing.seller_claims_verified and listing.monthly_visitors > 100):
+            penalties += 25.0
+            reasons.append("Zero Search Visibility: Seller claims organic traffic but domain has 0 indexed search pages (-25 pts).")
+
         return penalties, reasons
 
     @classmethod
@@ -306,6 +316,11 @@ class ScoringEngine:
 
         if any("Platform policy risk" in f for f in valuation.red_flags):
             rejection_reasons.append("Severe legal/platform risk: relies on scraping or unauthorized private APIs.")
+            return "REJECTED", rejection_reasons, False, {}
+
+        # Disqualify from Buyer Shortlist if claimed traffic has 0 search index presence and no analytics proof
+        if seo.confidence == "unverified_zero_traffic" or (seo.indexed_pages == 0 and not listing.seller_claims_verified and listing.monthly_visitors > 100):
+            rejection_reasons.append("Claimed traffic has zero search engine presence (0 indexed pages) with no verified analytics proof.")
             return "REJECTED", rejection_reasons, False, {}
 
         # Normal Budget <= $1,000 Candidates

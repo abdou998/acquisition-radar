@@ -6,10 +6,36 @@ AI Overviews vulnerability, and keyword expansion opportunities based on Google 
 
 import re
 from typing import Dict, Any, List, Optional, Tuple
+import httpx
+from bs4 import BeautifulSoup
+
 from radar.models import Listing, SEOMetrics
 from radar.seo.cpc_benchmarks import get_niche_benchmark
 
 class SEOAnalyzer:
+    @staticmethod
+    def check_search_engine_index(domain: Optional[str]) -> Tuple[int, List[str]]:
+        """
+        Queries search engine index for domain presence ('site:domain').
+        Returns (indexed_pages_count, sample_snippets).
+        """
+        if not domain or "." not in domain:
+            return 0, []
+        clean = domain.lower().replace("https://", "").replace("http://", "").strip("/")
+        try:
+            headers = {
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            }
+            url = f"https://html.duckduckgo.com/html/?q=site%3A{clean}"
+            resp = httpx.get(url, headers=headers, follow_redirects=True, timeout=5.0)
+            if resp.status_code == 200:
+                soup = BeautifulSoup(resp.text, "html.parser")
+                results = [a.get_text(strip=True) for a in soup.select(".result__title")]
+                return len(results), results[:3]
+        except Exception:
+            pass
+        return 0, []
+
     @staticmethod
     def assess_ai_overview_vulnerability(category: str, title: str, description: str) -> Tuple[str, str]:
         """
@@ -35,7 +61,6 @@ class SEOAnalyzer:
         Evaluates traffic trajectory and algorithm stability.
         Returns (trend_status, change_percent, reason)
         """
-        # Check raw metadata for historical month data if provided by marketplace
         meta = listing.raw_metadata
         history = meta.get("traffic_history", [])
 
@@ -53,7 +78,6 @@ class SEOAnalyzer:
                 else:
                     return "stable", round(pct, 1), "Stable traffic trajectory over observation window."
 
-        # If no explicit history array, examine description and seller claims
         desc = listing.description.lower()
         if "declining" in desc or "lost traffic" in desc or "algorithm update" in desc:
             return "declining", -35.0, "Seller notes traffic decline following search engine updates."
@@ -65,29 +89,56 @@ class SEOAnalyzer:
     @classmethod
     def analyze(cls, listing: Listing) -> SEOMetrics:
         """
-        Runs comprehensive SEO assessment on a listing.
+        Runs comprehensive SEO assessment on a listing with live search index verification.
         """
         benchmark = get_niche_benchmark(listing.category, listing.title, listing.description)
         ai_risk, ai_risk_notes = cls.assess_ai_overview_vulnerability(listing.category, listing.title, listing.description)
         trend, trend_pct, trend_notes = cls.estimate_traffic_trend(listing)
 
-        # Baseline organic visits estimate
-        est_organic_visits = listing.monthly_visitors
-        if est_organic_visits == 0 and listing.monthly_search_clicks > 0:
-            est_organic_visits = listing.monthly_search_clicks
+        domain_age = listing.domain_age_years if listing.domain_age_years > 0 else 1.5
 
-        # Determine confidence
-        confidence = "low"
-        if listing.seller_claims_verified:
+        # Check live index presence if domain is available
+        indexed_count, sample_snippets = cls.check_search_engine_index(listing.domain)
+
+        health_notes = [
+            f"AI Overviews Risk: {ai_risk.upper()} - {ai_risk_notes}",
+            f"Traffic Trend: {trend.upper()} ({trend_notes})"
+        ]
+
+        # Evaluate credibility of traffic claims:
+        # If domain has 0 indexed pages and seller claims have no third-party verification:
+        if listing.domain and indexed_count == 0 and not listing.seller_claims_verified:
+            est_organic_visits = 0
+            indexed_pages = 0
+            ranking_keywords_count = 0
+            da_proxy = 5.0
+            confidence = "unverified_zero_traffic"
+            health_notes.append("CRITICAL DUE DILIGENCE: Domain has 0 indexed pages in search engines. Claimed organic search traffic is fabricated, dead, or non-existent.")
+        elif listing.seller_claims_verified:
+            est_organic_visits = max(listing.monthly_visitors, listing.monthly_search_clicks)
+            indexed_pages = max(indexed_count, 5)
+            ranking_keywords_count = max(10, int(est_organic_visits / 12))
+            da_proxy = min(60.0, round(12.0 + (domain_age * 4.0) + (min(est_organic_visits, 10000) / 400.0), 1))
             confidence = "verified"
-        elif listing.domain and est_organic_visits > 0:
-            confidence = "medium"
+            health_notes.append("Search Presence: Marketplace data verified with Google Analytics / Search Console connection.")
+        elif indexed_count > 0:
+            est_organic_visits = min(listing.monthly_visitors, indexed_count * 120)
+            indexed_pages = indexed_count
+            ranking_keywords_count = max(5, int(est_organic_visits / 15))
+            da_proxy = min(50.0, round(10.0 + (domain_age * 3.0) + (indexed_count * 1.5), 1))
+            confidence = "indexed_unverified"
+            health_notes.append(f"Search Presence: Domain is indexed in search engines ({indexed_count}+ pages visible).")
+        else:
+            est_organic_visits = min(listing.monthly_visitors, 50)
+            indexed_pages = 0
+            ranking_keywords_count = 0
+            da_proxy = 5.0
+            confidence = "low"
+            health_notes.append("Search Presence: Domain masked or unverified without search index confirmation.")
 
         # Referring domains and authority proxy estimation
-        domain_age = listing.domain_age_years if listing.domain_age_years > 0 else 1.5
-        est_referring_domains = max(5, int(domain_age * 12 + (est_organic_visits / 200)))
-        est_backlinks = est_referring_domains * 7
-        da_proxy = min(60.0, round(10.0 + (domain_age * 4.0) + (min(est_organic_visits, 10000) / 400.0), 1))
+        est_referring_domains = max(1, int(indexed_pages * 2 + (est_organic_visits / 250)))
+        est_backlinks = est_referring_domains * 5
 
         # Commercial intent ratio
         commercial_intent = benchmark["default_commercial_intent"]
@@ -105,11 +156,7 @@ class SEOAnalyzer:
             f"'{top_kws[0] if top_kws else 'product'} alternatives', and comparison landing pages."
         )
 
-        health_notes = [
-            f"AI Overviews Risk: {ai_risk.upper()} - {ai_risk_notes}",
-            f"Traffic Trend: {trend.upper()} ({trend_notes})",
-            f"Commercial Search Intent: {int(commercial_intent * 100)}% estimated transactional/commercial intent."
-        ]
+        health_notes.append(f"Commercial Search Intent: {int(commercial_intent * 100)}% estimated transactional/commercial intent.")
 
         if trend == "declining":
             health_notes.append("WARNING: Potential vulnerability to Google Helpful Content / Core Updates. Audit content quality before bidding.")
@@ -118,13 +165,13 @@ class SEOAnalyzer:
             listing_id=listing.id,
             domain=listing.domain,
             estimated_monthly_organic_visits=est_organic_visits,
-            ranking_keywords_count=max(10, int(est_organic_visits / 12)),
+            ranking_keywords_count=ranking_keywords_count,
             top_keywords=top_kws,
             commercial_intent_ratio=commercial_intent,
             backlinks_count=est_backlinks,
             referring_domains=est_referring_domains,
             domain_authority_proxy=da_proxy,
-            indexed_pages=max(5, int(domain_age * 15)),
+            indexed_pages=indexed_pages,
             brand_search_ratio=0.15,
             traffic_trend_6m=trend,
             traffic_trend_change_pct=trend_pct,

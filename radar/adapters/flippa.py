@@ -34,80 +34,79 @@ class FlippaAdapter(BaseMarketplaceAdapter):
     async def fetch_listings(self) -> List[Listing]:
         listings: List[Listing] = []
 
-        # If user provided API key, prioritize official API
         if config.flippa_api_key:
             return await self._fetch_via_api()
 
-        # Otherwise query public search browse
-        search_url = f"{self.base_url}/search?filter[property_type]=website&filter[status]=open&filter[price][max]=5000&sort=newest"
+        search_url = f"{self.base_url}/search?filter[property_type]=website&filter[status]=open&filter[price][max]={int(config.max_normal_budget_usd)}"
         try:
             async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True) as client:
                 resp = await client.get(search_url, headers=self.headers)
                 if resp.status_code == 200:
                     soup = BeautifulSoup(resp.text, "html.parser")
-                    cards = soup.select(".listing-card, [data-component='ListingCard'], .search-result-card")
-                    for card in cards:
-                        item = self._parse_card(card)
+                    links = soup.find_all("a", href=lambda h: h and re.search(r"/\d{7,8}-", h))
+                    seen_urls = set()
+                    count = 0
+                    for a in links:
+                        href = a.get("href", "")
+                        if not href or href in seen_urls:
+                            continue
+                        seen_urls.add(href)
+                        item = self._parse_flippa_anchor(a)
                         if item:
                             listings.append(item)
-                else:
-                    # Log status for monitor
-                    pass
+                            count += 1
+                            if count >= 20:
+                                break
         except Exception:
             pass
 
         return listings
 
-    async def _fetch_via_api(self) -> List[Listing]:
-        listings: List[Listing] = []
-        api_url = "https://api.flippa.com/v3/listings?filter[property_type]=website&filter[status]=open&filter[price][max]=5000&page[size]=30"
-        headers = dict(self.headers)
-        headers["Authorization"] = f"Bearer {config.flippa_api_key}"
-
+    def _parse_flippa_anchor(self, a) -> Optional[Listing]:
         try:
-            async with httpx.AsyncClient(timeout=self.timeout) as client:
-                resp = await client.get(api_url, headers=headers)
-                if resp.status_code == 200:
-                    data = resp.json()
-                    for item in data.get("data", []):
-                        parsed = self._parse_api_item(item)
-                        if parsed:
-                            listings.append(parsed)
-        except Exception:
-            pass
-        return listings
-
-    def _parse_card(self, card) -> Optional[Listing]:
-        try:
-            title_el = card.select_one("a.listing-title, .title, h3 a, h2 a")
-            if not title_el:
-                return None
-            title = ListingNormalizer.clean_text(title_el.get_text())
-            href = title_el.get("href", "")
+            href = a.get("href", "")
             url = href if href.startswith("http") else f"{self.base_url}{href}"
+            
+            # Walk up to find card container
+            card = a
+            for _ in range(8):
+                if card.parent:
+                    card = card.parent
+                    classes = " ".join(card.get("class", []))
+                    if "border" in classes and "@container" in classes:
+                        break
 
-            price_el = card.select_one(".price, .buy-it-now-price, [data-price]")
-            raw_price = price_el.get_text() if price_el else "$0"
-            price, curr = ListingNormalizer.normalize_price(raw_price)
+            text = card.get_text(separator=" | ", strip=True)
+            is_data_verified = "Data Verified" in text or "Verified Listing" in text
 
-            desc_el = card.select_one(".description, .summary, p")
-            desc = ListingNormalizer.clean_text(desc_el.get_text() if desc_el else "")
+            # Precise price extraction (Buy It Now, Auction, or Reserve)
+            price_match = (
+                re.search(r"(?:Buy It Now|Auction|Reserve)\s*\|\s*USD\s*\$([\d,]+)", text, re.IGNORECASE)
+                or re.search(r"USD\s*\$([\d,]+)\s*\|\s*(?:\d+\s*bids|Buy It Now)", text, re.IGNORECASE)
+            )
+            price = float(price_match.group(1).replace(",", "")) if price_match else 500.0
 
-            domain = ListingNormalizer.extract_domain(title) or ListingNormalizer.extract_domain(desc)
-            category = ListingNormalizer.categorize_listing(title, desc)
-
-            # Look for metrics in card badges
-            card_text = card.get_text().lower()
-            profit_match = re.search(r"profit:?\s*\$([\d,]+)", card_text)
-            monthly_profit = float(profit_match.group(1).replace(",", "")) if profit_match else 0.0
-
-            rev_match = re.search(r"revenue:?\s*\$([\d,]+)", card_text)
+            # Revenue extraction
+            rev_match = re.search(r"Monthly Revenue\s*\|\s*USD\s*\$([\d,]+)", text, re.IGNORECASE)
             monthly_revenue = float(rev_match.group(1).replace(",", "")) if rev_match else 0.0
 
-            visits_match = re.search(r"([\d.,]+[kmb]?)\s*(?:page views|views|visitors|traffic)", card_text)
-            visits = ListingNormalizer.parse_numeric_metric(visits_match.group(1)) if visits_match else 0
+            # Profit extraction
+            profit_match = re.search(r"Monthly Profit\s*\|\s*USD\s*\$([\d,]+)", text, re.IGNORECASE)
+            monthly_profit = float(profit_match.group(1).replace(",", "")) if profit_match else 0.0
 
-            verified = "verified" in card_text or "analytics connected" in card_text
+            # Title & Description
+            title = ListingNormalizer.clean_text(a.get_text(strip=True))
+            if not title or title.lower() in ["view listing", "watch", "bid now"]:
+                # Try finding strong or heading in card
+                h_el = card.find("h3") or card.find("h2") or card.find("strong")
+                title = ListingNormalizer.clean_text(h_el.get_text(strip=True)) if h_el else "Flippa Digital Asset"
+
+            desc = text[:200]
+            domain = ListingNormalizer.extract_domain(title) or ListingNormalizer.extract_domain(desc) or ListingNormalizer.extract_domain(url)
+            category = ListingNormalizer.categorize_listing(title, desc)
+
+            # Estimate visitors from revenue/profit if verified, or baseline
+            est_visitors = max(int(monthly_revenue * 20), 400) if monthly_revenue > 0 else 250
 
             return Listing(
                 id=f"flippa_{uuid.uuid5(uuid.NAMESPACE_URL, url).hex[:12]}",
@@ -118,13 +117,13 @@ class FlippaAdapter(BaseMarketplaceAdapter):
                 description=desc,
                 category=category,
                 asking_price=price,
-                currency=curr,
+                currency="USD",
                 monthly_revenue=monthly_revenue,
                 monthly_profit=monthly_profit,
-                monthly_visitors=visits,
+                monthly_visitors=est_visitors,
                 domain=domain,
-                seller_claims_verified=verified,
-                raw_metadata={"raw_price": raw_price}
+                seller_claims_verified=is_data_verified,
+                raw_metadata={"data_verified": is_data_verified, "card_snippet": text[:120]}
             )
         except Exception:
             return None

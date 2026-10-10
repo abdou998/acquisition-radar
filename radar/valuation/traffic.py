@@ -4,7 +4,7 @@ Calculates low, base, and high scenarios for ad-equivalent search traffic value,
 realistic monetization potential, and rebuild replacement cost.
 """
 
-from typing import Dict, Any, Tuple
+from typing import Dict, Any, Tuple, Optional
 from radar.models import Listing, SEOMetrics
 from radar.seo.cpc_benchmarks import get_niche_benchmark
 
@@ -29,13 +29,18 @@ class TrafficValuator:
         return low, base, high
 
     @staticmethod
-    def calculate_monetization_potential(listing: Listing, benchmark: Dict[str, Any]) -> Tuple[float, float, float]:
+    def calculate_monetization_potential(
+        listing: Listing, benchmark: Dict[str, Any], verified_visits: Optional[int] = None
+    ) -> Tuple[float, float, float]:
         """
         Calculates realistic achievable monthly revenue if properly monetized:
         Combines display ads (RPM), affiliate sales, and digital product/SaaS conversion.
         Returns: (low, base, high) in USD/month.
         """
-        visits = max(listing.monthly_visitors, listing.monthly_search_clicks)
+        if verified_visits is not None:
+            visits = verified_visits
+        else:
+            visits = max(listing.monthly_visitors, listing.monthly_search_clicks)
         subscribers = listing.subscribers_count
 
         if visits <= 0 and subscribers <= 0:
