@@ -37,9 +37,9 @@ jobs:
           RADAR_ENABLE_EMAIL: ${{ secrets.RADAR_ENABLE_EMAIL || 'true' }}
           RADAR_SMTP_HOST: ${{ secrets.RADAR_SMTP_HOST || 'smtp.gmail.com' }}
           RADAR_SMTP_PORT: ${{ secrets.RADAR_SMTP_PORT || '587' }}
-          RADAR_SMTP_USER: ${{ secrets.RADAR_SMTP_USER || 'abdssamad717@gmail.com' }}
+          RADAR_SMTP_USER: ${{ secrets.RADAR_SMTP_USER || 'sms.marketingvip@gmail.com' }}
           RADAR_SMTP_PASSWORD: ${{ secrets.RADAR_SMTP_PASSWORD }}
-          RADAR_SMTP_SENDER: ${{ secrets.RADAR_SMTP_SENDER || 'Acquisition Radar <abdssamad717@gmail.com>' }}
+          RADAR_SMTP_SENDER: ${{ secrets.RADAR_SMTP_SENDER || 'Acquisition Radar <sms.marketingvip@gmail.com>' }}
           RADAR_EMAIL_RECIPIENT: ${{ secrets.RADAR_EMAIL_RECIPIENT || 'abdssamad717@gmail.com' }}
           RADAR_ENABLE_TELEGRAM: ${{ secrets.RADAR_ENABLE_TELEGRAM || 'false' }}
           RADAR_TELEGRAM_BOT_TOKEN: ${{ secrets.RADAR_TELEGRAM_BOT_TOKEN }}
