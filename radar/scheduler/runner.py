@@ -9,6 +9,7 @@ import time
 import uuid
 from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
+import httpx
 
 try:
     from zoneinfo import ZoneInfo
@@ -44,9 +45,25 @@ class AcquisitionRadarRunner:
 
         # Step 1: Discover listings from all marketplace adapters
         discovered_listings, source_health = await registry.fetch_all(include_fixtures=include_fixtures)
-        daily_run.total_discovered = len(discovered_listings)
+        print(f"[*] Discovered {len(discovered_listings)} raw listings across marketplaces.")
+
+        # Step 1.5: Validate all listing links to ensure 100% live HTTP status
+        print("[*] Validating listing URLs for live HTTP status (dropping broken/404 links)...")
+        verified_live_listings: List[Listing] = []
+        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AcquisitionRadar/1.0"}) as client:
+            for l in discovered_listings:
+                try:
+                    res = await client.get(l.url)
+                    if res.status_code in [200, 301, 302, 307, 308]:
+                        verified_live_listings.append(l)
+                    else:
+                        print(f"    [-] Excluded dead link [{res.status_code}]: {l.url}")
+                except Exception as e:
+                    print(f"    [-] Excluded unreachable link: {l.url} ({e})")
+
+        daily_run.total_discovered = len(verified_live_listings)
         daily_run.source_health = source_health
-        print(f"[*] Discovered {len(discovered_listings)} listings across marketplaces.")
+        print(f"[+] Verified {len(verified_live_listings)} active, live listings for analysis.")
 
         # Step 2: Database upsert, price change detection, and history tracking
         processed_opportunities: List[CompleteOpportunity] = []
@@ -58,7 +75,7 @@ class AcquisitionRadarRunner:
         rejected_count = 0
         exceptional_5k_count = 0
 
-        for listing in discovered_listings:
+        for listing in verified_live_listings:
             # Upsert into database
             persisted_listing, is_new, price_changed = db.upsert_listing(listing)
             if is_new:
