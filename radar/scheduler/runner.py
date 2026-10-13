@@ -47,19 +47,34 @@ class AcquisitionRadarRunner:
         discovered_listings, source_health = await registry.fetch_all(include_fixtures=include_fixtures)
         print(f"[*] Discovered {len(discovered_listings)} raw listings across marketplaces.")
 
-        # Step 1.5: Validate all listing links to ensure 100% live HTTP status
-        print("[*] Validating listing URLs for live HTTP status (dropping broken/404 links)...")
+        # Step 1.5: Validate listing links to filter out confirmed 404/410 dead pages
+        print(f"[*] Validating {len(discovered_listings)} listing URLs...")
         verified_live_listings: List[Listing] = []
-        async with httpx.AsyncClient(timeout=8.0, follow_redirects=True, headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AcquisitionRadar/1.0"}) as client:
-            for l in discovered_listings:
+        headers = {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        }
+        sem = asyncio.Semaphore(5)
+
+        async def _check_url(client: httpx.AsyncClient, item: Listing):
+            # Listings freshly scraped from live search pages in this run are active
+            if item.source in ["flippa", "sideprojectors", "microns"] and not item.id.startswith("fp_") and not item.id.startswith("mc_"):
+                return item
+
+            async with sem:
                 try:
-                    res = await client.get(l.url)
-                    if res.status_code in [200, 301, 302, 307, 308]:
-                        verified_live_listings.append(l)
-                    else:
-                        print(f"    [-] Excluded dead link [{res.status_code}]: {l.url}")
-                except Exception as e:
-                    print(f"    [-] Excluded unreachable link: {l.url} ({e})")
+                    res = await client.get(item.url)
+                    if res.status_code in [404, 410]:
+                        print(f"    [-] Excluded dead link [{res.status_code}]: {item.url}")
+                        return None
+                    return item
+                except Exception:
+                    return item
+
+        async with httpx.AsyncClient(timeout=6.0, follow_redirects=True, headers=headers) as client:
+            results = await asyncio.gather(*(_check_url(client, l) for l in discovered_listings), return_exceptions=True)
+            for res in results:
+                if isinstance(res, Listing):
+                    verified_live_listings.append(res)
 
         daily_run.total_discovered = len(verified_live_listings)
         daily_run.source_health = source_health

@@ -31,8 +31,12 @@ class SideProjectorsAdapter(BaseMarketplaceAdapter):
     async def fetch_listings(self) -> List[Listing]:
         listings: List[Listing] = []
         endpoints = [
-            f"{self.base_url}/projects/saas",
-            f"{self.base_url}/projects/website"
+            f"{self.base_url}/projects/saas?page=1",
+            f"{self.base_url}/projects/saas?page=2",
+            f"{self.base_url}/projects/website?page=1",
+            f"{self.base_url}/projects/website?page=2",
+            f"{self.base_url}/projects/mobile?page=1",
+            f"{self.base_url}/projects/mobile?page=2"
         ]
 
         try:
@@ -51,7 +55,7 @@ class SideProjectorsAdapter(BaseMarketplaceAdapter):
                                 if item:
                                     listings.append(item)
                                     count += 1
-                                    if count >= 10:
+                                    if count >= 25:
                                         break
                     except Exception:
                         continue

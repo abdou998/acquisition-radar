@@ -13,27 +13,46 @@ from radar.models import Listing, SEOMetrics
 from radar.seo.cpc_benchmarks import get_niche_benchmark
 
 class SEOAnalyzer:
-    @staticmethod
-    def check_search_engine_index(domain: Optional[str]) -> Tuple[int, List[str]]:
+    _index_cache: Dict[str, Tuple[int, List[str]]] = {}
+    _ddg_rate_limited: bool = False
+
+    @classmethod
+    def check_search_engine_index(cls, domain: Optional[str]) -> Tuple[int, List[str]]:
         """
         Queries search engine index for domain presence ('site:domain').
         Returns (indexed_pages_count, sample_snippets).
+        Cached to avoid redundant queries; short-circuits on rate limit.
         """
         if not domain or "." not in domain:
             return 0, []
         clean = domain.lower().replace("https://", "").replace("http://", "").strip("/")
+        # Skip marketplace domains when domain is not disclosed
+        if any(m in clean for m in ["flippa.com", "sideprojectors.com", "microns.io", "acquire.com", "motioninvest.com", "littleexits.com", "investors.club"]):
+            return 0, []
+
+        if clean in cls._index_cache:
+            return cls._index_cache[clean]
+
+        if cls._ddg_rate_limited:
+            return 0, []
+
         try:
             headers = {
                 "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
             }
             url = f"https://html.duckduckgo.com/html/?q=site%3A{clean}"
-            resp = httpx.get(url, headers=headers, follow_redirects=True, timeout=5.0)
+            resp = httpx.get(url, headers=headers, follow_redirects=True, timeout=2.5)
             if resp.status_code == 200:
                 soup = BeautifulSoup(resp.text, "html.parser")
                 results = [a.get_text(strip=True) for a in soup.select(".result__title")]
-                return len(results), results[:3]
+                res = (len(results), results[:3])
+                cls._index_cache[clean] = res
+                return res
+            elif resp.status_code in [403, 429]:
+                cls._ddg_rate_limited = True
         except Exception:
             pass
+        cls._index_cache[clean] = (0, [])
         return 0, []
 
     @staticmethod

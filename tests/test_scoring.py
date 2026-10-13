@@ -129,3 +129,44 @@ def test_rejected_over_budget_without_exceptional_moat():
     score = ScoringEngine.evaluate(listing, seo, valuation)
     assert score.classification == "REJECTED"
     assert not score.exceptional_5k_candidate
+
+def test_auction_unmet_reserve_disqualification():
+    listing = Listing(
+        id="test_unmet_reserve",
+        source="flippa",
+        external_id="ext_5",
+        url="https://flippa.com/test-unmet-reserve",
+        title="High Reserve Blog",
+        description="Current bid $200 but seller reserve is not met.",
+        category="Content/SEO Site",
+        asking_price=200.0,
+        monthly_visitors=1500,
+        raw_metadata={"sale_type": "auction", "reserve_not_met": True, "current_bid": 200.0, "buy_it_now_price": 10000.0}
+    )
+    seo = SEOMetrics(listing_id="test_unmet_reserve")
+    valuation = Valuation(listing_id="test_unmet_reserve")
+
+    score = ScoringEngine.evaluate(listing, seo, valuation)
+    assert score.classification == "REJECTED"
+    assert any("unmet reserve" in r.lower() for r in score.rejection_reasons)
+
+def test_unverified_auction_disqualification():
+    listing = Listing(
+        id="test_unverified_bid",
+        source="flippa",
+        external_id="ext_6",
+        url="https://flippa.com/test-unverified-bid",
+        title="Unverified Bidding Site",
+        description="Current bid $150 with unknown reserve.",
+        category="Content/SEO Site",
+        asking_price=150.0,
+        monthly_visitors=800,
+        raw_metadata={"sale_type": "auction", "current_bid": 150.0}
+    )
+    seo = SEOMetrics(listing_id="test_unverified_bid")
+    valuation = Valuation(listing_id="test_unverified_bid")
+
+    score = ScoringEngine.evaluate(listing, seo, valuation)
+    assert score.classification == "REJECTED"
+    assert any("unverified auction" in r.lower() for r in score.rejection_reasons)
+
