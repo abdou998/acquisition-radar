@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Acquisition Radar — 2026-10-13</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 32px;
+      border-bottom: 3px solid #3b82f6;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .header .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin: 0;
+    }
+    .content {
+      padding: 32px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 32px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card .val {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0;
+    }
+    .stat-card .label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .hero-deal {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .deal-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .deal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .deal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      text-decoration: none;
+    }
+    .deal-title:hover {
+      color: #2563eb;
+    }
+    .badge-score {
+      background: #059669;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .metrics-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .metrics-table td, .metrics-table th {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .metrics-table th {
+      background: #f8fafc;
+      color: #475569;
+      text-align: left;
+    }
+    .callout {
+      background: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      padding: 14px 16px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0;
+      font-size: 13.5px;
+    }
+    .playbook-list {
+      margin: 8px 0;
+      padding-left: 20px;
+      font-size: 13px;
+    }
+    .playbook-list li {
+      margin-bottom: 4px;
+    }
+    .alert-banner {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #92400e;
+      margin: 12px 0;
+    }
+    .footer {
+      background: #f8fafc;
+      padding: 24px 32px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Daily Online Business Acquisition Radar</h1>
+      <p class="subtitle">Auditing digital assets under $1,000 &bull; Generated 2026-10-13 09:37 UTC &bull; Schedule 08:00 Africa/Casablanca</p>
+    </div>
+
+    <div class="content">
+      <!-- Section A: Executive Summary -->
+      <div class="section-title">A. Executive Summary</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="val">53</div>
+          <div class="label">Total Discovered</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" style="color: #059669;">3</div>
+          <div class="label">Shortlist &le; $1k</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" style="color: #2563eb;">0</div>
+          <div class="label">Exceptional &le; $5k</div>
+        </div>
+        <div class="stat-card">
+          <div class="val">13</div>
+          <div class="label">Watchlist / Drops</div>
+        </div>
+      </div>
+
+      
+      <div class="hero-deal">
+        <span class="hero-badge">Top Opportunity of the Day</span>
+        <h3 style="margin: 4px 0 8px 0;"><a href="https://flippa.com/14338967-profitable-fully-automated-global-esim-store-sells-travel-data-in-190-countries-with-instant-delivery-every-sale-is-100-organic-marketing-untapped" target="_blank" style="color: #1e3a8a; text-decoration: none;">Alodata - Automated Global eSIM Travel Data Store</a></h3>
+        <p style="margin: 0 0 10px 0; font-size: 14px; color: #1e293b;">
+          <strong>Price:</strong> $750 &bull; 
+          <strong>Score:</strong> 81.5/100 &bull; 
+          <strong>Source:</strong> Flippa
+        </p>
+        <p style="margin: 0; font-size: 13.5px; color: #334155;">DISCOUNTED REPLACEMENT PLAY: Priced at $750, this asset trades well below its estimated rebuild cost of ~$2050. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.</p>
+      </div>
+      
+
+      <!-- Section B: Best Opportunities Under $1,000 -->
+      <div class="section-title">B. Best Opportunities Under $1,000 USD</div>
+      <p style="font-size: 13px; color: #64748b; margin-top: -8px;">Strict maximum budget $1,000 total, including all escrow and transfer fees.</p>
+
+      
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14338967-profitable-fully-automated-global-esim-store-sells-travel-data-in-190-countries-with-instant-delivery-every-sale-is-100-organic-marketing-untapped" target="_blank" class="deal-title">#1. Alodata - Automated Global eSIM Travel Data Store</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">E-commerce</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$750</div>
+              <span class="badge-score">Score: 81.5/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$832</strong></td>
+                <td>2,100 visits</td>
+                <td>$254/mo</td>
+                <td><strong>$564/mo</strong></td>
+                <td>$2050</td>
+                <td><strong>4.7 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $750, this asset trades well below its estimated rebuild cost of ~$2050. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14338967-profitable-fully-automated-global-esim-store-sells-travel-data-in-190-countries-with-instant-delivery-every-sale-is-100-organic-marketing-untapped" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14357933-catchy-brandable-domain-name-3k-business-blog-includes-instagram-monetized-social-group-beginner-friendly-website" target="_blank" class="deal-title">#2. Women Are Wealthy</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">Content/Blog</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$200</div>
+              <span class="badge-score">Score: 79.0/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$260</strong></td>
+                <td>5,340 visits</td>
+                <td>$267/mo</td>
+                <td><strong>$247/mo</strong></td>
+                <td>$3970</td>
+                <td><strong>1.4 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $200, this asset trades well below its estimated rebuild cost of ~$3970. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14357933-catchy-brandable-domain-name-3k-business-blog-includes-instagram-monetized-social-group-beginner-friendly-website" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14239440-speisekartemenus-de-6-month-old-website-monetized-with-google-adsense-guest-posting-german-menu-price-niche-perfect-for-earning-through-google-adsense" target="_blank" class="deal-title">#3. Speisekartemenus.de</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">Content/Blog</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$300</div>
+              <span class="badge-score">Score: 75.5/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$360</strong></td>
+                <td>4,600 visits</td>
+                <td>$225/mo</td>
+                <td><strong>$55/mo</strong></td>
+                <td>$3600</td>
+                <td><strong>2.3 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $300, this asset trades well below its estimated rebuild cost of ~$3600. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14239440-speisekartemenus-de-6-month-old-website-monetized-with-google-adsense-guest-posting-german-menu-price-niche-perfect-for-earning-through-google-adsense" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+      
+
+      <!-- Section C: Best SEO Opportunities -->
+      <div class="section-title">C. Best SEO Opportunities</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="margin: 0 0 6px 0;"><a href="https://flippa.com/14338967-profitable-fully-automated-global-esim-store-sells-travel-data-in-190-countries-with-instant-delivery-every-sale-is-100-organic-marketing-untapped" target="_blank" style="color: #1e293b; text-decoration: none;">Alodata - Automated Global eSIM Travel Data Store</a></h4>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Domain: alodata.com &bull; DA Proxy: 23</div>
+          <p style="font-size: 12.5px; margin: 0; color: #334155;">Target high-intent commercial keywords: 'best e-commerce for small business', 'alodata online alternatives', and comparison landing pages.</p>
+        </div>
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="margin: 0 0 6px 0;"><a href="https://flippa.com/14357933-catchy-brandable-domain-name-3k-business-blog-includes-instagram-monetized-social-group-beginner-friendly-website" target="_blank" style="color: #1e293b; text-decoration: none;">Women Are Wealthy</a></h4>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Domain: Masked &bull; DA Proxy: 31</div>
+          <p style="font-size: 12.5px; margin: 0; color: #334155;">Target high-intent commercial keywords: 'best content/blog for small business', 'women online alternatives', and comparison landing pages.</p>
+        </div>
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="margin: 0 0 6px 0;"><a href="https://flippa.com/14239440-speisekartemenus-de-6-month-old-website-monetized-with-google-adsense-guest-posting-german-menu-price-niche-perfect-for-earning-through-google-adsense" target="_blank" style="color: #1e293b; text-decoration: none;">Speisekartemenus.de</a></h4>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Domain: speisekartemenus.de &bull; DA Proxy: 30</div>
+          <p style="font-size: 12.5px; margin: 0; color: #334155;">Target high-intent commercial keywords: 'best content/blog for small business', 'speisekartemenus online alternatives', and comparison landing pages.</p>
+        </div>
+        
+      </div>
+
+      <!-- Section D: Watchlist and Changes -->
+      <div class="section-title">D. Watchlist & Tracked Price Changes</div>
+      
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>Listing</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Status / Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td><a href="https://www.microns.io/startup-listings/reddit-bookmark-manager-extension" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">Reddit Bookmark Manager Extension</a></td>
+              <td>Micro-SaaS</td>
+              <td>$3500</td>
+              <td>
+                
+                <span>Watchlist (Score: 70)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/14393815-ai-powered-b2b-business-days-calculator-low-maintenance-monetized-with-adsense-perfect-niche-tool-for-hr-logistics-organic-traffic-domain-age-15-years" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">How Many Business Days</a></td>
+              <td>Micro-SaaS</td>
+              <td>$65</td>
+              <td>
+                
+                <span>Watchlist (Score: 66)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/13774133-glammypet-is-an-ai-pet-grooming-saas-on-an-8-year-aged-domain-1-250-value-earn-recurring-income-from-groomer-subscriptions-ready-to-launch-business" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">SaaS & AI Marketplace | Luxury Pet Grooming Finder (GlamMyPet.com)</a></td>
+              <td>Micro-SaaS</td>
+              <td>$105</td>
+              <td>
+                
+                <span>Watchlist (Score: 66)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/14183130-property-1-is-a-specialized-real-estate-saas-platform-on-a-23-year-aged-domain-a-complete-business-in-a-box-model-to-earn-passive-income" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">SaaS | Premium Real Estate Marketplace (Property-1.com)</a></td>
+              <td>Micro-SaaS</td>
+              <td>$150</td>
+              <td>
+                
+                <span>Watchlist (Score: 66)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/14258909-subscription-business-making-1360-month-net-profit-no-technical-knowledge-required-ai-ready-sign-nda-watch-workflow-demo-high-growth-potential" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">Service | Business</a></td>
+              <td>Micro-SaaS</td>
+              <td>$500</td>
+              <td>
+                
+                <span>Watchlist (Score: 66)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://www.microns.io/startup-listings/online-store-with-nfc-cards" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">Online Store with NFC Cards</a></td>
+              <td>E-commerce</td>
+              <td>$4500</td>
+              <td>
+                
+                <span>Watchlist (Score: 66)</span>
+                
+              </td>
+            </tr>
+            
+          </tbody>
+        </table>
+      
+
+      <!-- Section E: Exceptional Opportunities Up to $5,000 -->
+      <div class="section-title">E. Worth Considering — Exceptional Opportunities Up to $5,000</div>
+      
+        <div class="callout" style="border-left-color: #64748b; background: #f8fafc;">
+          <strong>“No exceptional opportunities justified exceeding the $1,000 budget today.”</strong><br>
+          <span style="font-size: 12px; color: #64748b;">Candidates between $1k and $5k failed to meet the strict cash flow, verification, and payback standards.</span>
+        </div>
+      
+
+    </div>
+
+    <div class="footer">
+      Daily Acquisition Radar &bull; Automated Digital Business Sourcing &bull; 
+      Always use Escrow.com and verify Google Search Console &amp; payment dashboards prior to transfer.
+    </div>
+  </div>
+</body>
+</html>

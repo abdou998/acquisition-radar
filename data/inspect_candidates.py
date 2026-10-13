@@ -1,7 +1,13 @@
 import re
 import httpx
 
-with open("reports/daily_report_2026-10-10.md", "r", encoding="utf-8") as f:
+import glob
+
+report_files = sorted(glob.glob("reports/daily_report_*.md"))
+latest_report = report_files[-1] if report_files else "reports/daily_report_2026-10-10.md"
+print(f"Inspecting links in: {latest_report}")
+
+with open(latest_report, "r", encoding="utf-8") as f:
     text = f.read()
 
 urls = sorted(list(set(re.findall(r"https?://[^\s\)\"\>]+", text))))
