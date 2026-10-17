@@ -310,6 +310,12 @@ class ScoringEngine:
         exceptional_just = {}
 
         # Critical disqualifiers
+        # 1. Ended or Sold listings
+        if "ended" in listing.status.lower() or "sold" in listing.status.lower():
+            rejection_reasons.append("Listing has ended or is already sold on the marketplace.")
+            return "REJECTED", rejection_reasons, False, {}
+
+        # 2. Maximum allowable ceiling
         if listing.asking_price > config.max_exceptional_budget_usd:
             rejection_reasons.append(f"Asking price (${listing.asking_price:,.0f}) exceeds maximum allowable exceptional limit (${config.max_exceptional_budget_usd:,.0f}).")
             return "REJECTED", rejection_reasons, False, {}
@@ -318,20 +324,43 @@ class ScoringEngine:
             rejection_reasons.append("Severe legal/platform risk: relies on scraping or unauthorized private APIs.")
             return "REJECTED", rejection_reasons, False, {}
 
-        # Auction with unmet reserve: current bid does NOT equal acquisition price!
-        if listing.raw_metadata.get("reserve_not_met"):
+        # 3. Comprehensive Auction Safeguards (A bid is NEVER an acquisition price!)
+        if listing.raw_metadata.get("sale_type") == "auction":
             bin_p = listing.raw_metadata.get("buy_it_now_price")
-            if not bin_p or bin_p > config.max_normal_budget_usd:
+            reserve_p = listing.raw_metadata.get("reserve_price")
+            reserve_not_met = listing.raw_metadata.get("reserve_not_met")
+            bid = listing.raw_metadata.get("current_bid", 0.0)
+
+            # If Reserve is not met:
+            if reserve_not_met:
                 rejection_reasons.append(
-                    f"Auction has an unmet reserve and no sub-$1,000 Buy It Now option "
-                    f"(BIN: ${bin_p or 0:,.0f}); current bid cannot acquire the asset."
+                    f"Auction has an unmet reserve; current bid of ${bid:,.0f} cannot acquire the asset."
                 )
                 return "REJECTED", rejection_reasons, False, {}
 
-        # Unverified auction without confirmed reserve status or Buy It Now
-        if listing.raw_metadata.get("sale_type") == "auction" and not listing.raw_metadata.get("no_reserve") and not listing.raw_metadata.get("reserve_met") and not listing.raw_metadata.get("buy_it_now_price"):
-            rejection_reasons.append("Unverified auction bid; reserve status unknown and no fixed Buy It Now price established.")
-            return "REJECTED", rejection_reasons, False, {}
+            # If Reserve price exists and exceeds normal budget (e.g. $40,500 reserve on a $400 bid):
+            if reserve_p and reserve_p > config.max_normal_budget_usd:
+                rejection_reasons.append(
+                    f"Auction reserve is ${reserve_p:,.0f} exceeding $1,000 budget; "
+                    f"current bid of ${bid:,.0f} cannot acquire the asset."
+                )
+                return "REJECTED", rejection_reasons, False, {}
+
+            # If Buy It Now exists and exceeds normal budget:
+            if bin_p and bin_p > config.max_normal_budget_usd:
+                rejection_reasons.append(
+                    f"Auction has Buy It Now price of ${bin_p:,.0f} exceeding $1,000 budget; "
+                    f"current bid of ${bid:,.0f} cannot acquire the asset."
+                )
+                return "REJECTED", rejection_reasons, False, {}
+
+            # If auction has NO guaranteed sub-$1,000 Buy It Now:
+            if not bin_p or bin_p > config.max_normal_budget_usd:
+                rejection_reasons.append(
+                    f"Auction listing without guaranteed sub-$1,000 Buy It Now; "
+                    f"current bid of ${bid:,.0f} is not an asking price."
+                )
+                return "REJECTED", rejection_reasons, False, {}
 
         # Disqualify from Buyer Shortlist if claimed traffic has 0 search index presence and no analytics proof
         if seo.confidence == "unverified_zero_traffic" or (seo.indexed_pages == 0 and not listing.seller_claims_verified and listing.monthly_visitors > 100):

@@ -91,9 +91,9 @@ class SideProjectorsAdapter(BaseMarketplaceAdapter):
                 page_text = detail_soup.get_text()
                 price_match = re.search(r"asking\s*price:\s*\$([\d,]+)", page_text, re.IGNORECASE)
                 if price_match:
-                    price = float(price_match.group(1).replace(",", ""))
+                    price = min(float(price_match.group(1).replace(",", "")), 10_000_000.0)
                 rev_match = re.search(r"monthly\s*revenue:\s*\$([\d,]+)", page_text, re.IGNORECASE)
-                monthly_rev = float(rev_match.group(1).replace(",", "")) if rev_match else 0.0
+                monthly_rev = min(float(rev_match.group(1).replace(",", "")), 10_000_000.0) if rev_match else 0.0
             except Exception:
                 # If detail fetch fails, verify with quick HEAD/GET
                 monthly_rev = 0.0
@@ -113,7 +113,7 @@ class SideProjectorsAdapter(BaseMarketplaceAdapter):
                 currency=curr,
                 monthly_revenue=monthly_rev,
                 monthly_profit=monthly_rev * 0.85,
-                monthly_visitors=max(int(price * 1.5), 250),
+                monthly_visitors=min(max(int(price * 1.5), 250), 10_000_000),
                 domain=domain,
                 seller_claims_verified=False,
                 raw_metadata={"verified_live": True}

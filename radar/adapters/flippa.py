@@ -1,8 +1,8 @@
 """
 Flippa Marketplace Adapter.
 Fetches website, micro-SaaS, and digital asset listings from Flippa.
-Supports multi-page catalog discovery across classifieds and auctions,
-detail-level Buy It Now & reserve verification, and official API integration.
+Specializes in verified fixed-price classifieds, eliminating auction reserve traps,
+and provides deep detail-page verification for Buy It Now, reserve pricing, and analytics badges.
 """
 
 import asyncio
@@ -27,9 +27,9 @@ class FlippaAdapter(BaseMarketplaceAdapter):
         return {
             "source": "Flippa",
             "inventory_profile": "Massive global inventory: starter sites, content blogs, micro-SaaS, ecommerce, domains.",
-            "price_range_suitability": "High suitability for <= $1,000 acquisitions. Over 40% of website listings are starter sites under $1k.",
+            "price_range_suitability": "High suitability for <= $1,000 acquisitions via verified classified fixed-price inventory.",
             "buyer_protection": "Flippa Escrow / Escrow.com integration, verified Google Analytics and AdSense data badges.",
-            "access_method": "Multi-page public search discovery and classifieds parsing; supports official API if FLIPPA_API_KEY configured.",
+            "access_method": "Multi-page classified discovery and detail audit; supports official API if FLIPPA_API_KEY configured.",
             "access_restrictions": "Cloudflare bot detection on direct headless requests. Compliant user-agent and rate limit applied."
         }
 
@@ -37,29 +37,26 @@ class FlippaAdapter(BaseMarketplaceAdapter):
         if config.flippa_api_key:
             return await self._fetch_via_api()
 
-        listings: List[Listing] = []
         seen_urls = set()
+        candidate_listings: List[Listing] = []
 
-        # Broad discovery endpoints covering classifieds (guaranteed fixed price) and open listings
+        # Focus discovery strictly on classified fixed-price inventory (zero bidding games, zero hidden reserves)
+        # plus high-value recent inventory across categories and pages
         endpoints = [
-            # Classifieds (fixed price, zero bidding games or hidden reserves)
             f"{self.base_url}/search?filter[property_type]=website&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
             f"{self.base_url}/search?filter[property_type]=website&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=2",
+            f"{self.base_url}/search?filter[property_type]=website&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=3",
             f"{self.base_url}/search?filter[property_type]=saas&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
+            f"{self.base_url}/search?filter[property_type]=saas&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=2",
             f"{self.base_url}/search?filter[property_type]=ecommerce&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
+            f"{self.base_url}/search?filter[property_type]=ecommerce&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=2",
             f"{self.base_url}/search?filter[property_type]=app&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
-            # Open search (recent additions & general search)
-            f"{self.base_url}/search?filter[property_type]=website&filter[status]=open&filter[price][max]={int(config.max_normal_budget_usd)}&sort=most_recent",
-            f"{self.base_url}/search?filter[property_type]=website&filter[status]=open&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
-            f"{self.base_url}/search?filter[property_type]=website&filter[status]=open&filter[price][max]={int(config.max_normal_budget_usd)}&page=2",
-            f"{self.base_url}/search?filter[property_type]=saas&filter[status]=open&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
-            f"{self.base_url}/search?filter[property_type]=ecommerce&filter[status]=open&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
-            f"{self.base_url}/search?filter[property_type]=app&filter[status]=open&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
-            # Exceptional candidates up to $5,000
-            f"{self.base_url}/search?filter[property_type]=website&filter[status]=open&filter[price][max]={int(config.max_exceptional_budget_usd)}&sort=most_recent"
+            f"{self.base_url}/search?filter[property_type]=service&filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&page=1",
+            f"{self.base_url}/search?filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&sort=most_recent",
+            f"{self.base_url}/search?filter[sale_method]=classified&filter[price][max]={int(config.max_normal_budget_usd)}&sort=price_low_high",
+            # Exceptional candidates up to $5,000 (classified only)
+            f"{self.base_url}/search?filter[sale_method]=classified&filter[price][max]={int(config.max_exceptional_budget_usd)}&sort=most_recent"
         ]
-
-        candidate_listings: List[Listing] = []
 
         try:
             async with httpx.AsyncClient(timeout=self.timeout, follow_redirects=True) as client:
@@ -81,70 +78,80 @@ class FlippaAdapter(BaseMarketplaceAdapter):
                     except Exception:
                         continue
 
-                # Concurrently audit candidate auctions to verify true Buy It Now and reserve status
-                sem = asyncio.Semaphore(5)
+                # Audit candidates in detail to ensure prices, reserve status, and verification badges are 100% accurate
+                sem = asyncio.Semaphore(10)
                 async def _audit_safe(item: Listing):
                     async with sem:
                         await self._audit_listing_detail(client, item)
 
-                # Target auctions with bids under budget that might have hidden reserves / high BINs
-                auctions_to_audit = [
-                    item for item in candidate_listings
-                    if item.raw_metadata.get("sale_type") == "auction" and item.asking_price <= config.max_normal_budget_usd
-                ]
-                audit_targets = auctions_to_audit[:15]
-                if audit_targets:
-                    await asyncio.gather(*(_audit_safe(item) for item in audit_targets), return_exceptions=True)
-
-                listings = candidate_listings
+                # Priority audit candidates: all listings priced <= $5,000 (up to 50)
+                audit_pool = [l for l in candidate_listings if l.asking_price <= config.max_exceptional_budget_usd]
+                if audit_pool:
+                    await asyncio.gather(*(_audit_safe(l) for l in audit_pool[:50]), return_exceptions=True)
 
         except Exception:
             pass
 
-        return listings
+        return candidate_listings
 
     def _parse_flippa_anchor(self, a) -> Optional[Listing]:
         try:
             href = a.get("href", "")
             url = href if href.startswith("http") else f"{self.base_url}{href}"
-            
-            # Walk up to find card container
-            card = a
-            for _ in range(8):
-                if card.parent:
-                    card = card.parent
-                    classes = " ".join(card.get("class", []))
-                    if "border" in classes and "@container" in classes:
-                        break
+
+            # Accurately identify the enclosing <li> card element
+            card = a.find_parent("li")
+            if not card:
+                curr = a
+                for _ in range(5):
+                    if curr.parent:
+                        curr = curr.parent
+                        if curr.name == "li":
+                            card = curr
+                            break
+            if not card:
+                return None
 
             text = card.get_text(separator=" | ", strip=True)
             is_data_verified = "Data Verified" in text or "Verified Listing" in text
 
-            # Precise price extraction distinguishing classified vs auction vs buy it now
+            # Precise price extraction distinguishing classified vs auction
             asking_match = re.search(r"Asking price\s*\|\s*USD\s*\$([\d,]+)", text, re.IGNORECASE)
             bin_card_match = re.search(r"Buy It Now\s*\|\s*USD\s*\$([\d,]+)", text, re.IGNORECASE)
-            auction_match = re.search(r"Auction\s*\|\s*USD\s*\$([\d,]+)", text, re.IGNORECASE)
-            bid_match = re.search(r"USD\s*\$([\d,]+)\s*\|\s*\d+\s*bids", text, re.IGNORECASE)
+            is_auction_card = bool(
+                re.search(r"\b(auction|bids?|starting bid|highest bid|reserve)\b", text, re.IGNORECASE)
+            )
 
             current_bid = None
-            if asking_match:
+            if is_auction_card:
+                sale_type = "auction"
+                bid_match = (
+                    re.search(r"(?:Auction|Highest Bid|Starting Bid)\s*\|\s*USD\s*\$([\d,]+)", text, re.IGNORECASE)
+                    or re.search(r"USD\s*\$([\d,]+)\s*\|\s*\d+\s*bids", text, re.IGNORECASE)
+                    or re.search(r"USD\s*\$([\d,]+)", text, re.IGNORECASE)
+                )
+                if bid_match:
+                    current_bid = float(bid_match.group(1).replace(",", ""))
+
+                # An auction bid is NEVER an acquisition price!
+                if bin_card_match:
+                    price = float(bin_card_match.group(1).replace(",", ""))
+                else:
+                    price = 999999.0
+            elif asking_match:
                 price = float(asking_match.group(1).replace(",", ""))
                 sale_type = "classified"
             elif bin_card_match:
                 price = float(bin_card_match.group(1).replace(",", ""))
                 sale_type = "buy_it_now"
-            elif auction_match:
-                price = float(auction_match.group(1).replace(",", ""))
-                sale_type = "auction"
-                current_bid = price
-            elif bid_match:
-                price = float(bid_match.group(1).replace(",", ""))
-                sale_type = "auction"
-                current_bid = price
             else:
                 any_price = re.search(r"USD\s*\$([\d,]+)", text, re.IGNORECASE)
-                price = float(any_price.group(1).replace(",", "")) if any_price else 500.0
-                sale_type = "classified" if "asking price" in text.lower() else "unknown"
+                if any_price and "asking price" in text.lower():
+                    price = float(any_price.group(1).replace(",", ""))
+                    sale_type = "classified"
+                else:
+                    price = 999999.0
+                    sale_type = "unknown"
 
             # Check for price reduction
             red_match = re.search(r"USD\s*\$([\d,]+)\s*\|\s*USD\s*\$([\d,]+)\s*\|\s*Reduced\s*(\d+)%", text, re.IGNORECASE)
@@ -178,7 +185,7 @@ class FlippaAdapter(BaseMarketplaceAdapter):
             # Title
             title = ListingNormalizer.clean_text(a.get_text(strip=True))
             if not title or title.lower() in ["view listing", "watch", "bid now"]:
-                h_el = card.find("h3") or card.find("h2") or card.find("strong")
+                h_el = card.find("h4") or card.find("h3") or card.find("h2") or card.find("strong")
                 title = ListingNormalizer.clean_text(h_el.get_text(strip=True)) if h_el else "Flippa Digital Asset"
 
             desc = text[:250]
@@ -217,44 +224,75 @@ class FlippaAdapter(BaseMarketplaceAdapter):
             return None
 
     async def _audit_listing_detail(self, client: httpx.AsyncClient, listing: Listing) -> None:
-        """Audits the listing detail page to resolve true Buy It Now and reserve status."""
+        """Audits the listing detail page to resolve true Buy It Now, asking price, and reserve status."""
         try:
             resp = await client.get(listing.url, headers=self.headers, timeout=8.0)
             if resp.status_code != 200:
                 return
             html = resp.text
+            soup = BeautifulSoup(html, "html.parser")
+            bid_box = soup.find(id="bid-box-price")
+            box_text = bid_box.get_text(separator=" | ", strip=True) if bid_box else html
 
-            # 1. Check for Buy It Now
-            bin_m = (
-                re.search(r"Buy\s+It\s+Now(?:\s+for)?\s*(?:USD|\$)?\s*\$?([\d,]+)", html, re.IGNORECASE)
-                or re.search(r"Buy\s+It\s+Now\s*\|\s*USD\s*\$([\d,]+)", html, re.IGNORECASE)
+            # 1. Check if Ended or Sold
+            if "ended" in box_text.lower() or "sold" in box_text.lower():
+                listing.status = "ended"
+                listing.asking_price = 999999.0
+                return
+
+            is_auction_box = bool(
+                re.search(r"\b(auction|bids?|starting bid|highest bid|reserve)\b", box_text, re.IGNORECASE)
             )
-            if bin_m:
-                bin_price = float(bin_m.group(1).replace(",", ""))
-                listing.raw_metadata["buy_it_now_price"] = bin_price
-                # If auction displayed a low current bid, the real acquisition price is the Buy It Now price
-                if listing.raw_metadata.get("sale_type") == "auction":
+
+            if is_auction_box:
+                listing.raw_metadata["sale_type"] = "auction"
+
+                # Check for Buy It Now
+                bin_m = (
+                    re.search(r"Buy\s+It\s+Now[^\$0-9]*(?:USD|\$)?\s*\$?([\d,]+)", box_text, re.IGNORECASE)
+                    or re.search(r"Buy\s+It\s+Now[^\$0-9]*(?:USD|\$)?\s*\$?([\d,]+)", html, re.IGNORECASE)
+                )
+                if bin_m:
+                    bin_price = float(bin_m.group(1).replace(",", ""))
+                    listing.raw_metadata["buy_it_now_price"] = bin_price
                     listing.asking_price = bin_price
-
-            # 2. Check Reserve status
-            reserve_not_met = "Reserve not met" in html
-            reserve_met = "Reserve met" in html
-            no_reserve = "No reserve" in html
-
-            listing.raw_metadata["reserve_not_met"] = reserve_not_met
-            listing.raw_metadata["reserve_met"] = reserve_met
-            listing.raw_metadata["no_reserve"] = no_reserve
-
-            if reserve_not_met:
-                bin_p = listing.raw_metadata.get("buy_it_now_price")
-                if bin_p:
-                    listing.asking_price = bin_p
                 else:
-                    # Unmet reserve with no Buy It Now: cannot be acquired for the bid
+                    listing.raw_metadata["buy_it_now_price"] = None
                     listing.asking_price = 999999.0
-                listing.raw_metadata["is_unmet_reserve_auction"] = True
 
-            # 3. Check Google Analytics / AdSense badges
+                # Check Reserve status & Reserve Price
+                res_m = (
+                    re.search(r"Reserve\s*:\s*(?:USD|\$)?\s*\$?([\d,]+)", box_text, re.IGNORECASE)
+                    or re.search(r"Reserve\s*:\s*(?:USD|\$)?\s*\$?([\d,]+)", html, re.IGNORECASE)
+                )
+                if res_m:
+                    reserve_price = float(res_m.group(1).replace(",", ""))
+                    listing.raw_metadata["reserve_price"] = reserve_price
+                    if not listing.raw_metadata.get("buy_it_now_price"):
+                        listing.asking_price = reserve_price
+
+                reserve_not_met = "reserve not met" in box_text.lower() or "reserve not met" in html.lower()
+                listing.raw_metadata["reserve_not_met"] = reserve_not_met
+                if reserve_not_met and not listing.raw_metadata.get("buy_it_now_price"):
+                    listing.asking_price = max(listing.raw_metadata.get("reserve_price") or 999999.0, 999999.0)
+                    listing.raw_metadata["is_unmet_reserve_auction"] = True
+
+                # Extract Current Bid
+                bid_m = re.search(r"(?:Highest|Starting|Current)\s+Bid[^\$0-9]*(?:USD|\$)?\s*\$?([\d,]+)", box_text, re.IGNORECASE)
+                if bid_m:
+                    listing.raw_metadata["current_bid"] = float(bid_m.group(1).replace(",", ""))
+
+            elif "asking price" in box_text.lower():
+                price_m = re.search(r"USD\s*\$([\d,]+)", box_text)
+                if price_m:
+                    classified_price = float(price_m.group(1).replace(",", ""))
+                    listing.asking_price = classified_price
+                    listing.raw_metadata["sale_type"] = "classified"
+                    listing.raw_metadata["current_bid"] = None
+                    listing.raw_metadata["reserve_price"] = None
+                    listing.raw_metadata["reserve_not_met"] = False
+
+            # 6. Check Google Analytics / AdSense badges
             if "Google Analytics" in html and ("Verified" in html or "Connected" in html):
                 listing.seller_claims_verified = True
                 listing.raw_metadata["google_analytics_verified"] = True

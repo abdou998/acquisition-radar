@@ -192,6 +192,19 @@ class Database:
         is_new = False
         price_changed = False
 
+        # Sanitize metrics to valid SQLite integer and float boundaries
+        listing.monthly_visitors = int(min(max(listing.monthly_visitors or 0, 0), 2_000_000_000))
+        listing.monthly_pageviews = int(min(max(listing.monthly_pageviews or 0, 0), 2_000_000_000))
+        listing.monthly_search_clicks = int(min(max(listing.monthly_search_clicks or 0, 0), 2_000_000_000))
+        listing.subscribers_count = int(min(max(listing.subscribers_count or 0, 0), 2_000_000_000))
+        listing.asking_price = float(min(max(listing.asking_price or 0.0, 0.0), 100_000_000.0))
+        if listing.original_price is not None:
+            listing.original_price = float(min(max(listing.original_price, 0.0), 100_000_000.0))
+        listing.monthly_revenue = float(min(max(listing.monthly_revenue or 0.0, 0.0), 100_000_000.0))
+        listing.monthly_profit = float(min(max(listing.monthly_profit or 0.0, -100_000_000.0), 100_000_000.0))
+        listing.hours_per_week = float(min(max(listing.hours_per_week or 0.0, 0.0), 168.0))
+        listing.domain_age_years = float(min(max(listing.domain_age_years or 0.0, 0.0), 100.0))
+
         with self.get_connection() as conn:
             cursor = conn.cursor()
             cursor.execute("SELECT id, asking_price, original_price, first_seen_at FROM listings WHERE url = ?", (listing.url,))

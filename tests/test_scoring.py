@@ -150,6 +150,32 @@ def test_auction_unmet_reserve_disqualification():
     assert score.classification == "REJECTED"
     assert any("unmet reserve" in r.lower() for r in score.rejection_reasons)
 
+def test_auction_high_reserve_disqualification():
+    """Validates that an auction with a high reserve (e.g. TO GO Group with $40,500 reserve on $400 bid) is strictly rejected."""
+    listing = Listing(
+        id="test_to_go_group",
+        source="flippa",
+        external_id="12950008",
+        url="https://flippa.com/12950008-to-go-group",
+        title="TO GO Group",
+        description="Insulated food containers. Current bid $400, reserve $40,500.",
+        category="E-commerce",
+        asking_price=400.0,
+        monthly_visitors=2000,
+        raw_metadata={
+            "sale_type": "auction",
+            "current_bid": 400.0,
+            "reserve_price": 40500.0,
+            "reserve_not_met": False
+        }
+    )
+    seo = SEOMetrics(listing_id="test_to_go_group")
+    valuation = Valuation(listing_id="test_to_go_group")
+
+    score = ScoringEngine.evaluate(listing, seo, valuation)
+    assert score.classification == "REJECTED"
+    assert any("reserve is $40,500 exceeding $1,000 budget" in r.lower() for r in score.rejection_reasons)
+
 def test_unverified_auction_disqualification():
     listing = Listing(
         id="test_unverified_bid",
@@ -168,5 +194,6 @@ def test_unverified_auction_disqualification():
 
     score = ScoringEngine.evaluate(listing, seo, valuation)
     assert score.classification == "REJECTED"
-    assert any("unverified auction" in r.lower() for r in score.rejection_reasons)
+    assert any("without guaranteed sub-$1,000 buy it now" in r.lower() for r in score.rejection_reasons)
+
 
