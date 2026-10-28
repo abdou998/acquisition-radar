@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Daily Acquisition Radar — 2026-10-28</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background-color: #f8fafc;
+      color: #0f172a;
+      margin: 0;
+      padding: 24px;
+      line-height: 1.5;
+    }
+    .container {
+      max-width: 920px;
+      margin: 0 auto;
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    }
+    .header {
+      background: #0f172a;
+      color: #ffffff;
+      padding: 32px;
+      border-bottom: 3px solid #3b82f6;
+    }
+    .header h1 {
+      margin: 0 0 8px 0;
+      font-size: 24px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+    }
+    .header .subtitle {
+      color: #94a3b8;
+      font-size: 14px;
+      margin: 0;
+    }
+    .content {
+      padding: 32px;
+    }
+    .section-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #1e293b;
+      margin: 32px 0 16px 0;
+      padding-bottom: 8px;
+      border-bottom: 2px solid #e2e8f0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .stat-card {
+      background: #f1f5f9;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 16px;
+      text-align: center;
+    }
+    .stat-card .val {
+      font-size: 28px;
+      font-weight: 800;
+      color: #1e293b;
+      margin: 0;
+    }
+    .stat-card .label {
+      font-size: 12px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .hero-deal {
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 28px;
+    }
+    .hero-badge {
+      display: inline-block;
+      background: #2563eb;
+      color: #ffffff;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      padding: 3px 8px;
+      border-radius: 4px;
+      margin-bottom: 8px;
+    }
+    .deal-card {
+      background: #ffffff;
+      border: 1px solid #cbd5e1;
+      border-radius: 10px;
+      padding: 24px;
+      margin-bottom: 24px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    .deal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .deal-title {
+      font-size: 18px;
+      font-weight: 700;
+      color: #0f172a;
+      text-decoration: none;
+    }
+    .deal-title:hover {
+      color: #2563eb;
+    }
+    .badge-score {
+      background: #059669;
+      color: #ffffff;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 4px 10px;
+      border-radius: 6px;
+    }
+    .pill {
+      display: inline-block;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: #e2e8f0;
+      color: #334155;
+    }
+    .metrics-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 16px;
+      font-size: 13px;
+    }
+    .metrics-table td, .metrics-table th {
+      padding: 8px 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .metrics-table th {
+      background: #f8fafc;
+      color: #475569;
+      text-align: left;
+    }
+    .callout {
+      background: #f8fafc;
+      border-left: 4px solid #3b82f6;
+      padding: 14px 16px;
+      border-radius: 0 6px 6px 0;
+      margin: 14px 0;
+      font-size: 13.5px;
+    }
+    .playbook-list {
+      margin: 8px 0;
+      padding-left: 20px;
+      font-size: 13px;
+    }
+    .playbook-list li {
+      margin-bottom: 4px;
+    }
+    .alert-banner {
+      background: #fffbeb;
+      border: 1px solid #fef3c7;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 16px;
+      border-radius: 4px;
+      font-size: 13px;
+      color: #92400e;
+      margin: 12px 0;
+    }
+    .footer {
+      background: #f8fafc;
+      padding: 24px 32px;
+      border-top: 1px solid #e2e8f0;
+      font-size: 12px;
+      color: #64748b;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>Daily Online Business Acquisition Radar</h1>
+      <p class="subtitle">Auditing digital assets under $1,000 &bull; Generated 2026-10-28 14:42 UTC &bull; Schedule 08:00 Africa/Casablanca</p>
+    </div>
+
+    <div class="content">
+      <!-- Section A: Executive Summary -->
+      <div class="section-title">A. Executive Summary</div>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="val">369</div>
+          <div class="label">Total Discovered</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" style="color: #059669;">7</div>
+          <div class="label">Shortlist &le; $1k</div>
+        </div>
+        <div class="stat-card">
+          <div class="val" style="color: #2563eb;">3</div>
+          <div class="label">Exceptional &le; $5k</div>
+        </div>
+        <div class="stat-card">
+          <div class="val">155</div>
+          <div class="label">Watchlist / Drops</div>
+        </div>
+      </div>
+
+      
+      <div class="hero-deal">
+        <span class="hero-badge">Top Opportunity of the Day</span>
+        <h3 style="margin: 4px 0 8px 0;"><a href="https://flippa.com/13879998-vilmoria-is-a-ready-to-operate-women-s-fashion-store-with-653-in-sales-200-profitable-products-and-strong-growth-potential" target="_blank" style="color: #1e3a8a; text-decoration: none;">vilmoria</a></h3>
+        <p style="margin: 0 0 10px 0; font-size: 14px; color: #1e293b;">
+          <strong>Price:</strong> $790 &bull; 
+          <strong>Score:</strong> 78.0/100 &bull; 
+          <strong>Source:</strong> Flippa
+        </p>
+        <p style="margin: 0; font-size: 13.5px; color: #334155;">DISCOUNTED REPLACEMENT PLAY: Priced at $790, this asset trades well below its estimated rebuild cost of ~$4410. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.</p>
+      </div>
+      
+
+      <!-- Section B: Best Opportunities Under $1,000 -->
+      <div class="section-title">B. Best Opportunities Under $1,000 USD</div>
+      <p style="font-size: 13px; color: #64748b; margin-top: -8px;">Strict maximum budget $1,000 total, including all escrow and transfer fees.</p>
+
+      
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/13879998-vilmoria-is-a-ready-to-operate-women-s-fashion-store-with-653-in-sales-200-profitable-products-and-strong-growth-potential" target="_blank" class="deal-title">#1. vilmoria</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">E-commerce</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$790</div>
+              <span class="badge-score">Score: 78.0/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$874</strong></td>
+                <td>6,820 visits</td>
+                <td>$316/mo</td>
+                <td><strong>$164/mo</strong></td>
+                <td>$4410</td>
+                <td><strong>4.0 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $790, this asset trades well below its estimated rebuild cost of ~$4410. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/13879998-vilmoria-is-a-ready-to-operate-women-s-fashion-store-with-653-in-sales-200-profitable-products-and-strong-growth-potential" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14150811-ready-to-grow-women-s-fashion-shopify-store-branded-store-social-media-google-merchant-center-approved-french-market" target="_blank" class="deal-title">#2. Almensio</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">E-commerce</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$450</div>
+              <span class="badge-score">Score: 74.5/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$518</strong></td>
+                <td>5,060 visits</td>
+                <td>$94/mo</td>
+                <td><strong>$121/mo</strong></td>
+                <td>$3530</td>
+                <td><strong>7.9 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $450, this asset trades well below its estimated rebuild cost of ~$3530. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14150811-ready-to-grow-women-s-fashion-shopify-store-branded-store-social-media-google-merchant-center-approved-french-market" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14085948-turnkey-online-fashion-store-high-margins-growth-2-months-old-france-market-fully-automated-established-dropshipping-fast-roi-strong-domain-name-gmc" target="_blank" class="deal-title">#3. chicorea</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">E-commerce</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$550</div>
+              <span class="badge-score">Score: 74.5/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$622</strong></td>
+                <td>4,020 visits</td>
+                <td>$198/mo</td>
+                <td><strong>$96/mo</strong></td>
+                <td>$3010</td>
+                <td><strong>4.5 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $550, this asset trades well below its estimated rebuild cost of ~$3010. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14085948-turnkey-online-fashion-store-high-margins-growth-2-months-old-france-market-fully-automated-established-dropshipping-fast-roi-strong-domain-name-gmc" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14571411-htgp-an-seo-content-website-with-established-marketing-and-backlinks-profile-ideal-for-indiviauls-entrepreneur-digital-assest-buyers" target="_blank" class="deal-title">#4. Hellotoguestpost.com</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">Other</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$349</div>
+              <span class="badge-score">Score: 74.0/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$411</strong></td>
+                <td>4,020 visits</td>
+                <td>$158/mo</td>
+                <td><strong>$48/mo</strong></td>
+                <td>$3010</td>
+                <td><strong>3.7 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $349, this asset trades well below its estimated rebuild cost of ~$3010. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14571411-htgp-an-seo-content-website-with-established-marketing-and-backlinks-profile-ideal-for-indiviauls-entrepreneur-digital-assest-buyers" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14246758-women-s-fashion-shopify-brand-with-a-ready-to-run-store-branded-domain-curated-products-supplier-access-automated-fulfillment-and-marketing-setup" target="_blank" class="deal-title">#5. Perlinia</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">E-commerce</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$490</div>
+              <span class="badge-score">Score: 72.5/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$560</strong></td>
+                <td>3,880 visits</td>
+                <td>$80/mo</td>
+                <td><strong>$93/mo</strong></td>
+                <td>$2940</td>
+                <td><strong>10.0 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $490, this asset trades well below its estimated rebuild cost of ~$2940. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14246758-women-s-fashion-shopify-brand-with-a-ready-to-run-store-branded-domain-curated-products-supplier-access-automated-fulfillment-and-marketing-setup" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/14244053-amazon-affiliate-blanket-home-textile-site-with-10-month-earnings-history-894-total-commissions-2-conversion-and-proven-organic-search-traffic" target="_blank" class="deal-title">#6. Blanket Insider</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">Content/Blog</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$170</div>
+              <span class="badge-score">Score: 70.0/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$230</strong></td>
+                <td>1,560 visits</td>
+                <td>$73/mo</td>
+                <td><strong>$72/mo</strong></td>
+                <td>$2080</td>
+                <td><strong>4.5 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $170, this asset trades well below its estimated rebuild cost of ~$2080. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/14244053-amazon-affiliate-blanket-home-textile-site-with-10-month-earnings-history-894-total-commissions-2-conversion-and-proven-organic-search-traffic" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+        <div class="deal-card">
+          <div class="deal-header">
+            <div>
+              <a href="https://flippa.com/13971187-luxury-women-s-fashion-brand-sleek-design-strong-european-market-presence-automated-dropshipping-store" target="_blank" class="deal-title">#7. Zeliany</a>
+              <div style="margin-top: 6px; display: flex; gap: 6px; flex-wrap: wrap;">
+                <span class="pill">Flippa</span>
+                <span class="pill">E-commerce</span>
+                <span class="pill">Confidence: VERIFIED</span>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 20px; font-weight: 800; color: #0f172a;">$581</div>
+              <span class="badge-score">Score: 70.0/100</span>
+            </div>
+          </div>
+
+          <table class="metrics-table">
+            <thead>
+              <tr>
+                <th>All-In Cost</th>
+                <th>Monthly Visits</th>
+                <th>Claimed Profit</th>
+                <th>Ad-Equivalent Value</th>
+                <th>Rebuild Cost</th>
+                <th>Payback</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>$655</strong></td>
+                <td>2,720 visits</td>
+                <td>$72/mo</td>
+                <td><strong>$65/mo</strong></td>
+                <td>$2360</td>
+                <td><strong>13.0 mos</strong></td>
+              </tr>
+            </tbody>
+          </table>
+
+          <div class="callout">
+            <strong>Why This Is Undervalued:</strong><br>
+            DISCOUNTED REPLACEMENT PLAY: Priced at $581, this asset trades well below its estimated rebuild cost of ~$2360. Acquiring the established domain history, code, and existing search presence bypasses the 6-month Google sandbox and setup friction.
+          </div>
+
+          <div style="margin: 12px 0;">
+            <strong style="font-size: 13px; color: #1e293b;">30-Day Turnaround Playbook:</strong>
+            <ul class="playbook-list">
+              
+              <li>Day 1-7: Secure domain, repository, and asset credentials.</li>
+              
+              <li>Day 8-14: Fix UI usability bottlenecks and mobile responsive layout.</li>
+              
+              <li>Day 15-21: Implement Google Analytics 4, Search Console, and basic AdSense/affiliate tracking.</li>
+              
+              <li>Day 22-30: Begin targeted distribution across relevant subreddits, communities, and directory submissions.</li>
+              
+            </ul>
+            <div style="font-size: 12px; color: #64748b;">
+              Est. improvement cost: ~$50 &bull; Weekly time commitment: ~4.0 hrs/week
+            </div>
+          </div>
+
+          
+
+          <div style="margin-top: 14px; padding-top: 10px; border-top: 1px dashed #e2e8f0; display: flex; justify-content: space-between; align-items: center; font-size: 12.5px;">
+            <span><strong>Recommended Action:</strong> Contact seller via Flippa to verify analytics.</span>
+            <a href="https://flippa.com/13971187-luxury-women-s-fashion-brand-sleek-design-strong-european-market-presence-automated-dropshipping-store" target="_blank" style="color: #2563eb; font-weight: 700; text-decoration: none;">View Listing &rarr;</a>
+          </div>
+        </div>
+        
+      
+
+      <!-- Section C: Best SEO Opportunities -->
+      <div class="section-title">C. Best SEO Opportunities</div>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; margin-bottom: 24px;">
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="margin: 0 0 6px 0;"><a href="https://flippa.com/12248731-high-margin-seo-service-business-with-76-margins-16k-annual-profit-recurring-clients-and-a-scalable-lead-gen-platform-ready-for-agency-expansion" target="_blank" style="color: #1e293b; text-decoration: none;">SEO Supremacy</a></h4>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Domain: Masked &bull; DA Proxy: 43</div>
+          <p style="font-size: 12.5px; margin: 0; color: #334155;">Target high-intent commercial keywords: 'best micro-saas for small business', 'supremacy online alternatives', and comparison landing pages.</p>
+        </div>
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="margin: 0 0 6px 0;"><a href="https://flippa.com/13879998-vilmoria-is-a-ready-to-operate-women-s-fashion-store-with-653-in-sales-200-profitable-products-and-strong-growth-potential" target="_blank" style="color: #1e293b; text-decoration: none;">vilmoria</a></h4>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Domain: Masked &bull; DA Proxy: 35</div>
+          <p style="font-size: 12.5px; margin: 0; color: #334155;">Target high-intent commercial keywords: 'best e-commerce for small business', 'vilmoria online alternatives', and comparison landing pages.</p>
+        </div>
+        
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 16px;">
+          <h4 style="margin: 0 0 6px 0;"><a href="https://flippa.com/12295763-hair-extensions-asset-package-19k-instagram-suppliers-sops-domain-asset-sale" target="_blank" style="color: #1e293b; text-decoration: none;">megasboutique.shop</a></h4>
+          <div style="font-size: 12px; color: #64748b; margin-bottom: 8px;">Domain: megasboutique.shop &bull; DA Proxy: 43</div>
+          <p style="font-size: 12.5px; margin: 0; color: #334155;">Target high-intent commercial keywords: 'best other for small business', 'megasboutique online alternatives', and comparison landing pages.</p>
+        </div>
+        
+      </div>
+
+      <!-- Section D: Watchlist and Changes -->
+      <div class="section-title">D. Watchlist & Tracked Price Changes</div>
+      
+        <table class="metrics-table">
+          <thead>
+            <tr>
+              <th>Listing</th>
+              <th>Category</th>
+              <th>Price</th>
+              <th>Status / Change</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            <tr>
+              <td><a href="https://flippa.com/12248731-high-margin-seo-service-business-with-76-margins-16k-annual-profit-recurring-clients-and-a-scalable-lead-gen-platform-ready-for-agency-expansion" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">SEO Supremacy</a></td>
+              <td>Micro-SaaS</td>
+              <td>$2550</td>
+              <td>
+                
+                <span>Watchlist (Score: 81)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/11836890-highly-profitable-scalable-stock-market-education-platform" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">Trade Scape</a></td>
+              <td>Other</td>
+              <td>$5000</td>
+              <td>
+                
+                <span>Watchlist (Score: 76)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/14150811-ready-to-grow-women-s-fashion-shopify-store-branded-store-social-media-google-merchant-center-approved-french-market" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">Almensio</a></td>
+              <td>E-commerce</td>
+              <td>$450</td>
+              <td>
+                
+                <span>Watchlist (Score: 74)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/10929584-this-ecommerce-might-be-your-life-changing-decision" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">plainandglam.com</a></td>
+              <td>E-commerce</td>
+              <td>$1999</td>
+              <td>
+                
+                <span>Watchlist (Score: 74)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/10726314-e-commerce-sports-and-outdoor" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">eyesontarget.uk</a></td>
+              <td>E-commerce</td>
+              <td>$2500</td>
+              <td>
+                
+                <span>Watchlist (Score: 74)</span>
+                
+              </td>
+            </tr>
+            
+            <tr>
+              <td><a href="https://flippa.com/10791605-offshore-services-we-open-offshorecompanies-accounts" target="_blank" style="color: #1e293b; text-decoration: none; font-weight: 600;">offshore-brasil.com</a></td>
+              <td>Other</td>
+              <td>$3000</td>
+              <td>
+                
+                <span>Watchlist (Score: 74)</span>
+                
+              </td>
+            </tr>
+            
+          </tbody>
+        </table>
+      
+
+      <!-- Section E: Exceptional Opportunities Up to $5,000 -->
+      <div class="section-title">E. Worth Considering — Exceptional Opportunities Up to $5,000</div>
+      
+        
+        <div class="deal-card" style="border: 2px solid #3b82f6;">
+          <div class="deal-header">
+            <div>
+              <span class="hero-badge" style="background: #4338ca;">Exceptional High-Conviction Candidate</span>
+              <h3 style="margin: 4px 0;"><a href="https://flippa.com/12248731-high-margin-seo-service-business-with-76-margins-16k-annual-profit-recurring-clients-and-a-scalable-lead-gen-platform-ready-for-agency-expansion" target="_blank" class="deal-title">SEO Supremacy</a></h3>
+              <div style="font-size: 13px; color: #64748b;">Flippa &bull; Proven MRR: $1810 &bull; Net Profit: $1370/mo</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 22px; font-weight: 800; color: #1e3a8a;">$2550</div>
+              <span class="badge-score">Score: 81.0/100</span>
+            </div>
+          </div>
+
+          <div style="font-size: 13px; line-height: 1.6; color: #1e293b;">
+            <p><strong>1. Why It Merits Exceeding Normal Budget:</strong> Trades at $2,550 with proven cash flow ($1,370/mo) and 36,200 monthly visitors, representing an exceptional 2.0-month base payback.</p>
+            <p><strong>2. Evidence Validating Audience & Revenue:</strong> Verified financials: True | Domain age: 0.0 yrs | Audience: 36,200 visits, 0 subscribers.</p>
+            <p><strong>3. Why Price Appears Attractive:</strong> Valuation multiple of 0.16x annual earnings vs industry typical 2.5x-4.0x. Trades at a 62% discount to rebuild cost.</p>
+            <p><strong>4. What Could Go Wrong:</strong> Customer churn upon founder departure, niche competition, or platform dependency.</p>
+            <p><strong>5. Required Pre-Purchase Verification:</strong> Obtain 12-month verified Stripe/payment processor CSV export and conduct a 30-minute code/operations walkthrough with seller.</p>
+            <p><strong>6. Why Superior to Sub-$1,000 Alternatives:</strong> Unlike sub-$1,000 starter assets, this generates immediate defensible positive cash flow ($1,370/mo) and has an established, de-risked organic customer base.</p>
+          </div>
+        </div>
+        
+        <div class="deal-card" style="border: 2px solid #3b82f6;">
+          <div class="deal-header">
+            <div>
+              <span class="hero-badge" style="background: #4338ca;">Exceptional High-Conviction Candidate</span>
+              <h3 style="margin: 4px 0;"><a href="https://flippa.com/12295763-hair-extensions-asset-package-19k-instagram-suppliers-sops-domain-asset-sale" target="_blank" class="deal-title">megasboutique.shop</a></h3>
+              <div style="font-size: 13px; color: #64748b;">Flippa &bull; Proven MRR: $6370 &bull; Net Profit: $3300/mo</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 22px; font-weight: 800; color: #1e3a8a;">$3250</div>
+              <span class="badge-score">Score: 76.0/100</span>
+            </div>
+          </div>
+
+          <div style="font-size: 13px; line-height: 1.6; color: #1e293b;">
+            <p><strong>1. Why It Merits Exceeding Normal Budget:</strong> Trades at $3,250 with proven cash flow ($3,300/mo) and 127,400 monthly visitors, representing an exceptional 1.1-month base payback.</p>
+            <p><strong>2. Evidence Validating Audience & Revenue:</strong> Verified financials: True | Domain age: 0.0 yrs | Audience: 127,400 visits, 0 subscribers.</p>
+            <p><strong>3. Why Price Appears Attractive:</strong> Valuation multiple of 0.08x annual earnings vs industry typical 2.5x-4.0x. Trades at a 46% discount to rebuild cost.</p>
+            <p><strong>4. What Could Go Wrong:</strong> Customer churn upon founder departure, niche competition, or platform dependency.</p>
+            <p><strong>5. Required Pre-Purchase Verification:</strong> Obtain 12-month verified Stripe/payment processor CSV export and conduct a 30-minute code/operations walkthrough with seller.</p>
+            <p><strong>6. Why Superior to Sub-$1,000 Alternatives:</strong> Unlike sub-$1,000 starter assets, this generates immediate defensible positive cash flow ($3,300/mo) and has an established, de-risked organic customer base.</p>
+          </div>
+        </div>
+        
+        <div class="deal-card" style="border: 2px solid #3b82f6;">
+          <div class="deal-header">
+            <div>
+              <span class="hero-badge" style="background: #4338ca;">Exceptional High-Conviction Candidate</span>
+              <h3 style="margin: 4px 0;"><a href="https://flippa.com/11836890-highly-profitable-scalable-stock-market-education-platform" target="_blank" class="deal-title">Trade Scape</a></h3>
+              <div style="font-size: 13px; color: #64748b;">Flippa &bull; Proven MRR: $3980 &bull; Net Profit: $2500/mo</div>
+            </div>
+            <div style="text-align: right;">
+              <div style="font-size: 22px; font-weight: 800; color: #1e3a8a;">$5000</div>
+              <span class="badge-score">Score: 76.0/100</span>
+            </div>
+          </div>
+
+          <div style="font-size: 13px; line-height: 1.6; color: #1e293b;">
+            <p><strong>1. Why It Merits Exceeding Normal Budget:</strong> Trades at $5,000 with proven cash flow ($2,500/mo) and 79,600 monthly visitors, representing an exceptional 2.2-month base payback.</p>
+            <p><strong>2. Evidence Validating Audience & Revenue:</strong> Verified financials: True | Domain age: 0.0 yrs | Audience: 79,600 visits, 0 subscribers.</p>
+            <p><strong>3. Why Price Appears Attractive:</strong> Valuation multiple of 0.17x annual earnings vs industry typical 2.5x-4.0x. Trades at a 17% discount to rebuild cost.</p>
+            <p><strong>4. What Could Go Wrong:</strong> Customer churn upon founder departure, niche competition, or platform dependency.</p>
+            <p><strong>5. Required Pre-Purchase Verification:</strong> Obtain 12-month verified Stripe/payment processor CSV export and conduct a 30-minute code/operations walkthrough with seller.</p>
+            <p><strong>6. Why Superior to Sub-$1,000 Alternatives:</strong> Unlike sub-$1,000 starter assets, this generates immediate defensible positive cash flow ($2,500/mo) and has an established, de-risked organic customer base.</p>
+          </div>
+        </div>
+        
+      
+
+    </div>
+
+    <div class="footer">
+      Daily Acquisition Radar &bull; Automated Digital Business Sourcing &bull; 
+      Always use Escrow.com and verify Google Search Console &amp; payment dashboards prior to transfer.
+    </div>
+  </div>
+</body>
+</html>
